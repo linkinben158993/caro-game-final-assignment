@@ -1,13 +1,44 @@
 const createError = require('http-errors');
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const passport = require('passport');
+
+const app = express();
+app.use(passport.initialize());
+
+app.enable('trust proxy');
+app.options('*', cors());
+
+dotenv.config();
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-const app = express();
+// Mongo configuration
+mongoose
+  .connect(process.env.URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log('Mongo is connecting');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+mongoose.connection.on('connected', () => {
+  console.log('Mongo is successfully connected');
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongo is disconnected');
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
