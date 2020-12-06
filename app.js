@@ -17,7 +17,11 @@ app.enable('trust proxy');
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://caro-game-user-ikbpk9ijs.vercel.app',
+    ],
   }),
 );
 
