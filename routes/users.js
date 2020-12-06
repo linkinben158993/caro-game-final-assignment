@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
       console.log('User Existed', user);
       res.status(500).json({ message: { msgBody: 'Username Existed!', msgError: true } });
     } else {
-      const newUser = new Users({ email: username, password, role: 1 });
+      const newUser = new Users({ email: username, password, role: 0 });
       newUser.save((err1) => {
         if (err1) {
           res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
