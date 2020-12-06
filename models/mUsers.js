@@ -52,7 +52,7 @@ UserSchema.methods.checkPassword = function (password, callBack) {
       return callBack(err);
     }
 
-    if (isMatch) {
+    if (!isMatch) {
       return callBack(null, isMatch);
     }
 
