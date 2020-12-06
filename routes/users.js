@@ -14,7 +14,7 @@ const signToken = (userID) => {
       sub: userID,
     },
     process.env.secretOrKey,
-    { expiresIn: 14 * 1000 * 60 * 60 * 24 },
+    { expiresIn: 14 * 1000 * 60 * 60 * 24 }
   );
   return token;
 };
@@ -60,6 +60,32 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     const token = signToken(_id);
     res.cookie('access_token', token, options);
     res.status(200).json({ isAuthenticated: true, user: { email, role }, access_token: token });
+  }
+});
+
+router.get('/all', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  if (req.user.role !== 1) {
+    res.json({
+      success: false,
+      message: 'Must be admin to view page!',
+    });
+  } else {
+    Users.find({ role: 0 })
+      .exec()
+      .then((value) => {
+        res.status(200).json({
+          success: true,
+          message: 'Retrieved all users success!',
+          data: value,
+        });
+      })
+      .catch((reason) => {
+        res.status(500).json({
+          success: false,
+          message: 'Retrieved all users failed, server error!',
+          data: reason,
+        });
+      });
   }
 });
 

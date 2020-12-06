@@ -23,6 +23,12 @@ app.use(
 
 dotenv.config();
 
+const http = require('http');
+const socket = require('./middlewares/socket-io');
+
+const server = http.createServer(app);
+socket.startSocketServer(server);
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
@@ -76,4 +82,4 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = { app, server };
