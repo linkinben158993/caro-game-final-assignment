@@ -70,7 +70,7 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
       message: 'Must be admin to view page!',
     });
   } else {
-    Users.find({ role: 0 })
+    Users.find({ role: 0 }, { password: 0 })
       .exec()
       .then((value) => {
         res.status(200).json({
