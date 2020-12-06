@@ -33,9 +33,10 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save', function (next) {
-  if (this.isModified('password')) {
+  if (!this.isModified('password')) {
     return next();
   }
+
   bcrypt.hash(this.password, 10, (err, passwordHashed) => {
     if (err) {
       return next(err);
@@ -43,8 +44,6 @@ UserSchema.pre('save', function (next) {
     this.password = passwordHashed;
     return next();
   });
-
-  return next();
 });
 
 UserSchema.methods.checkPassword = function (password, callBack) {

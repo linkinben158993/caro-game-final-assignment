@@ -14,7 +14,7 @@ const signToken = (userID) => {
       sub: userID,
     },
     process.env.secretOrKey,
-    { expiresIn: 14 * 1000 * 60 * 60 * 24 }
+    { expiresIn: 14 * 1000 * 60 * 60 * 24 },
   );
   return token;
 };
@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
       console.log('User Existed', user);
       res.status(500).json({ message: { msgBody: 'Username Existed!', msgError: true } });
     } else {
-      const newUser = new Users({ email: username, password, role: 0 });
+      const newUser = new Users({ email: username, password, role: 1 });
       newUser.save((err1) => {
         if (err1) {
           res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
@@ -63,7 +63,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
   }
 });
 
-router.get('/all', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
   if (req.user.role !== 1) {
     res.json({
       success: false,
