@@ -28,15 +28,19 @@ module.exports = {
         }
       });
 
-      socket.on('client-connect', (response) => {
+      socket.on('client-login', (response) => {
         // On refresh onlineUsers may be duplicated
         if (onlineUsers.map((item) => item).indexOf(response.user.email) === -1) {
           onlineUsers.push(response.user.email);
         }
-        console.log('Current active sockets after client-connect:', activeSockets.length);
-        console.log('Current online users after client-connect:', onlineUsers.length);
+        console.log('Current active sockets after client-login:', activeSockets.length);
+        console.log('Current online users after client-login:', onlineUsers.length);
 
         socket.emit('online-users', onlineUsers);
+      });
+
+      socket.on('client-logout', (response) => {
+        console.log('User logout:', response);
       });
 
       socket.on('disconnect', () => {
