@@ -40,7 +40,12 @@ module.exports = {
       });
 
       socket.on('client-logout', (response) => {
-        console.log('User logout:', response);
+        const logoutUser = onlineUsers.map((item) => item).indexOf(response.user.email);
+        onlineUsers.splice((logoutUser, 1));
+        console.log('Current active sockets after logout:', activeSockets.length);
+        console.log('Current online users after logout:', onlineUsers.length);
+
+        socket.emit('online-users', onlineUsers);
       });
 
       socket.on('disconnect', () => {
