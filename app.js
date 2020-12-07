@@ -22,6 +22,7 @@ app.use(
       'http://localhost:3001',
       'https://caro-game-user.vercel.app',
       'https://caro-game-admin.vercel.app',
+      'https://caro-game-user-jb1g3g5fh.vercel.app',
     ],
   }),
 );
