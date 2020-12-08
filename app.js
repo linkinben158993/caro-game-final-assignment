@@ -25,7 +25,7 @@ app.use(
       // Online users
       'https://caro-game-user-git-an-onine-users.1712480.vercel.app',
       // Fullname issues
-      'https://caro-game-user-git-an-fix-fullname-field.1712480.vercel.app/',
+      'https://caro-game-user-git-an-fix-fullname-field.1712480.vercel.app',
     ],
   }),
 );
