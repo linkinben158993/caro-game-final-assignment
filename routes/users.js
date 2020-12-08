@@ -24,7 +24,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, name } = req.body;
+  console.log(name);
   Users.findOne({ username }, (err, user) => {
     if (err) {
       console.log('Error!');
@@ -34,7 +35,12 @@ router.post('/register', (req, res) => {
       console.log('User Existed', user);
       res.status(500).json({ message: { msgBody: 'Username Existed!', msgError: true } });
     } else {
-      const newUser = new Users({ email: username, password, role: 0 });
+      const newUser = new Users({
+        email: username,
+        password,
+        role: 1,
+        fullName: name,
+      });
       newUser.save((err1) => {
         if (err1) {
           res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
@@ -56,10 +62,12 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     sameSite: 'strict',
   };
   if (req.isAuthenticated()) {
-    const { _id, email, role } = req.user;
+    const { _id, email, role, fullName } = req.user;
     const token = signToken(_id);
     res.cookie('access_token', token, options);
-    res.status(200).json({ isAuthenticated: true, user: { email, role }, access_token: token });
+    res
+      .status(200)
+      .json({ isAuthenticated: true, user: { email, role, fullName }, access_token: token });
   }
 });
 

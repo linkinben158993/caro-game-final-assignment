@@ -15,10 +15,11 @@ const UserSchema = new mongoose.Schema({
     min: 6,
     max: 100,
   },
-  name: {
+  fullName: {
     type: String,
     required: true,
-    default: 'username',
+    // Should not be empty
+    default: "User's Name",
   },
   avatar: {
     type: String,

@@ -30,8 +30,8 @@ module.exports = {
 
       socket.on('client-login', (response) => {
         // On refresh onlineUsers may be duplicated
-        if (onlineUsers.map((item) => item).indexOf(response.user.email) === -1) {
-          onlineUsers.push(response.user.email);
+        if (onlineUsers.map((item) => item.email).indexOf(response.user.email) === -1) {
+          onlineUsers.push({ email: response.user.email, fullName: response.user.fullName });
         }
         console.log('Current active sockets after client-login:', activeSockets.length);
         console.log('Current online users after client-login:', onlineUsers.length);
@@ -40,7 +40,7 @@ module.exports = {
       });
 
       socket.on('client-logout', (response) => {
-        const logoutUser = onlineUsers.map((item) => item).indexOf(response.user.email);
+        const logoutUser = onlineUsers.map((item) => item.email).indexOf(response.user.email);
         onlineUsers.splice(logoutUser, 1);
         console.log('Current active sockets after logout:', activeSockets.length);
         console.log('Current online users after logout:', onlineUsers.length);
