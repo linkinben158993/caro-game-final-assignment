@@ -22,8 +22,10 @@ app.use(
       'http://localhost:3001',
       'https://caro-game-user.vercel.app',
       'https://caro-game-admin.vercel.app',
-      'https://caro-game-user-b6s3seiu7.vercel.app',
+      // Online users
       'https://caro-game-user-git-an-onine-users.1712480.vercel.app',
+      // Fullname issues
+      'https://caro-game-user-git-an-fix-fullname-field.1712480.vercel.app/',
     ],
   }),
 );
