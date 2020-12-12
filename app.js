@@ -29,7 +29,11 @@ app.enable('trust proxy');
 //     ],
 //   }),
 // );
-app.use(cors());
+app.use(
+  cors({
+    credentials: false,
+  }),
+);
 dotenv.config();
 
 const http = require('http');
