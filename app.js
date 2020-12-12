@@ -31,7 +31,7 @@ app.enable('trust proxy');
 // );
 app.use(
   cors({
-    credentials: false,
+    credentials: true,
   }),
 );
 dotenv.config();
