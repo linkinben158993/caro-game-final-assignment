@@ -12,7 +12,7 @@ const app = express();
 app.use(passport.initialize());
 
 app.enable('trust proxy');
-app.options('*', cors());
+// app.options('*', cors());
 // Add your front-end domain name here!
 // app.use(
 //   cors({
@@ -29,7 +29,7 @@ app.options('*', cors());
 //     ],
 //   }),
 // );
-
+app.use(cors());
 dotenv.config();
 
 const http = require('http');
