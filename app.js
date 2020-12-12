@@ -12,24 +12,23 @@ const app = express();
 app.use(passport.initialize());
 
 app.enable('trust proxy');
-// app.options('*', cors());
+app.options('*', cors());
 // Add your front-end domain name here!
-app.use(
-  cors({
-    // credentials: true,
-    // origin: [
-    //   'http://localhost:3000',
-    //   'http://localhost:3001',
-    //   'https://caro-game-user.vercel.app',
-    //   'https://caro-game-admin.vercel.app',
-    //   // Online users
-    //   'https://caro-game-user-git-an-onine-users.1712480.vercel.app',
-    //   // Fullname issues
-    //   'https://caro-game-user-git-an-fix-fullname-field.1712480.vercel.app',
-    // ],
-    origin: '*',
-  }),
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: [
+//       'http://localhost:3000',
+//       'http://localhost:3001',
+//       'https://caro-game-user.vercel.app',
+//       'https://caro-game-admin.vercel.app',
+//       // Online users
+//       'https://caro-game-user-git-an-onine-users.1712480.vercel.app',
+//       // Fullname issues
+//       'https://caro-game-user-git-an-fix-fullname-field.1712480.vercel.app',
+//     ],
+//   }),
+// );
 
 dotenv.config();
 
