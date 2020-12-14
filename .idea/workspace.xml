@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3ccf6edc-457e-4411-ae96-2eb47a198980" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middlewares/socket-io.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/socket-io.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +69,9 @@
       <workItem from="1607693480295" duration="3236000" />
       <workItem from="1607749126272" duration="62000" />
       <workItem from="1607749197252" duration="1306000" />
-      <workItem from="1607830362076" duration="22106000" />
+      <workItem from="1607830362076" duration="22954000" />
+      <workItem from="1607938739263" duration="1520000" />
+      <workItem from="1607957243810" duration="5531000" />
     </task>
     <servers />
   </component>

@@ -72,11 +72,11 @@ module.exports = {
       });
 
       socket.on('request-start-game', (response) => {
-        io.emit(`start-game-${response}`, response);
+        io.emit(`start-game-${response.roomId}`, response);
       });
 
       socket.on('client-make-move', (response) => {
-        io.emit('server-resp-move', response);
+        io.emit(`server-resp-move${response.roomId}`, response);
       });
 
       socket.on('disconnect', () => {
