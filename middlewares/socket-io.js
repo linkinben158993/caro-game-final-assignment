@@ -76,6 +76,7 @@ module.exports = {
       });
 
       socket.on('client-make-move', (response) => {
+        console.log(response);
         io.emit(`server-resp-move${response.roomId}`, response);
       });
 
