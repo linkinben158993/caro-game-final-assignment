@@ -38,7 +38,7 @@ router.post('/register', (req, res) => {
       const newUser = new Users({
         email: username,
         password,
-        role: 1,
+        role: 0,
         fullName: name,
       });
       newUser.save((err1) => {
