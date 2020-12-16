@@ -77,7 +77,15 @@ module.exports = {
 
       socket.on('client-make-move', (response) => {
         console.log(response);
-        io.emit(`server-resp-move${response.roomId}`, response);
+        io.emit(`server-resp-move-${response.roomId}`, response);
+      });
+
+      socket.on('client-message', (response) => {
+        console.log(response);
+        io.emit(`server-response-message-${response.roomId}`, {
+          username: response.username,
+          message: response.message,
+        });
       });
 
       socket.on('disconnect', () => {
