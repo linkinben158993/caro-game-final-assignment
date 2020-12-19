@@ -52,7 +52,6 @@ module.exports = {
         activeRooms.push(response);
         socket.emit('created-room', response);
 
-        // socket.join(response.roomId);
         console.log('Current active sockets after create-room:', activeSockets.length);
         console.log('Current online users after create-room:', onlineUsers.length);
         console.log('Current active rooms after create-room:', activeRooms.length);
@@ -78,31 +77,27 @@ module.exports = {
             // -1: Left room Left Room Close Browser, 0: Unfinished (), 1: Complete
             status: 0,
           });
-          // newMatch.save().then(() => {
-          //   io.emit('player-join-game', {
-          //     roomId: response.roomId,
-          //     roomDetails: activeRooms[roomJoinedIndex],
-          //     // eslint-disable-next-line no-underscore-dangle
-          //     matchId: newMatch._id,
-          //   });
-          // });
-          io.emit('player-join-game', {
-            roomId: response.roomId,
-            roomDetails: activeRooms[roomJoinedIndex],
-            // // eslint-disable-next-line no-underscore-dangle
-            // matchId: newMatch._id,
+          newMatch.save().then(() => {
+            io.emit('player-join-game', {
+              roomId: response.roomId,
+              roomDetails: activeRooms[roomJoinedIndex],
+              // eslint-disable-next-line no-underscore-dangle
+              matchId: newMatch._id,
+            });
           });
         } else {
           activeRooms[roomJoinedIndex].guests.push({
             username: response.currentUser.user.email,
             fullName: response.currentUser.user.fullName,
           });
-          io.emit(`start-game-${response.roomId}`, activeRooms[roomJoinedIndex]);
+          io.emit(`start-game-${response.roomId}`, {
+            roomId: response.roomId,
+            roomDetails: activeRooms[roomJoinedIndex],
+          });
         }
       });
 
       socket.on('request-start-game', (response) => {
-        console.log(response);
         io.emit(`start-game-${response.roomId}`, response);
       });
 
