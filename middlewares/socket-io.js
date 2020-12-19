@@ -1,4 +1,5 @@
 const socketIO = require('socket.io');
+const Matches = require('../models/mMatches');
 
 module.exports = {
   startSocketServer(server) {
@@ -47,7 +48,8 @@ module.exports = {
       });
 
       socket.on('create-room', (response) => {
-        activeRooms.push(response);
+        console.log(response);
+        activeRooms.push({ response, guests: [] });
         socket.emit('created-room', response);
 
         // socket.join(response.roomId);
@@ -60,15 +62,39 @@ module.exports = {
 
       socket.on('joined', (response) => {
         const roomJoinedIndex = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
-        activeRooms[roomJoinedIndex].y = {
-          username: response.currentUser.user.email,
-          fullName: response.currentUser.user.fullName,
-        };
+        if (activeRooms[roomJoinedIndex].y !== null) {
+          activeRooms[roomJoinedIndex].y = {
+            username: response.currentUser.user.email,
+            fullName: response.currentUser.user.fullName,
+          };
+        } else {
+          activeRooms[roomJoinedIndex].guests.push({
+            username: response.currentUser.user.email,
+            fullName: response.currentUser.user.fullName,
+          });
+        }
 
-        io.emit('player-join-game', {
-          roomId: response.roomId,
-          roomDetails: activeRooms[roomJoinedIndex],
-        });
+        // console.log(activeRooms[roomJoinedIndex]);
+        // const newMatch = new Matches({
+        //   matchId: activeRooms[roomJoinedIndex].roomId,
+        //   host: activeRooms[roomJoinedIndex].x.username,
+        //   opponent: activeRooms[roomJoinedIndex].y.username,
+        //   match: {
+        //     moves: [],
+        //   },
+        //   chatLogs: [],
+        //   // -1: Left room Left Room Close Browser, 0: Unfinished (), 1: Complete
+        //   status: 0,
+        // });
+        // newMatch.save().then(() => {
+        //   console.log('Save new game');
+        //   io.emit('player-join-game', {
+        //     roomId: response.roomId,
+        //     roomDetails: activeRooms[roomJoinedIndex],
+        //     // eslint-disable-next-line no-underscore-dangle
+        //     matchId: newMatch._id,
+        //   });
+        // });
       });
 
       socket.on('request-start-game', (response) => {
