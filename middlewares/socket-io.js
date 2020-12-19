@@ -83,6 +83,7 @@ module.exports = {
             status: 0,
           });
           newMatch.save().then(() => {
+            activeRooms[roomJoinedIndex].currentMatch = newMatchId;
             io.emit('player-join-game', {
               roomId: response.roomId,
               roomDetails: activeRooms[roomJoinedIndex],
@@ -107,15 +108,20 @@ module.exports = {
       });
 
       socket.on('client-make-move', (response) => {
-        console.log('Client moves:', response);
-        // const matchById = Matches.findOne({
-        //   roomId: response.roomId,
-        //   match: {
-        //     _id: { $elemMatch: mongoose.Types.ObjectId(response.matchId) },
-        //   },
-        // }).then((document) => {
-        //   console.log(document);
-        // });
+        Matches.findOne(
+          { roomId: response.roomId },
+          { match: { $elemMatch: { _id: response.matchId } } },
+        ).then((document) => {
+          document.match[0].moves.push(response.move);
+          document
+            .save()
+            .then(() => {
+              console.log('Save successfull');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
 
         io.emit(`server-resp-move-${response.roomId}`, response);
       });
@@ -126,6 +132,11 @@ module.exports = {
           username: response.username,
           message: response.message,
         });
+      });
+
+      socket.on('end-game', (response) => {
+        // Do something with response
+        console.log(response);
       });
 
       socket.on('disconnect', () => {
