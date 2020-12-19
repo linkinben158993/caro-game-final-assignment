@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
     // -1: guest, 0: user, 1: admin
     enum: [-1, 0, 1],
   },
-  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
+  // matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
 });
 
 UserSchema.pre('save', function (next) {

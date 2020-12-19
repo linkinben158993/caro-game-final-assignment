@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const MatchSchema = new mongoose.Schema({
-  matchId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   host: {
     type: String,
     required: true,
@@ -14,23 +9,30 @@ const MatchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  match: {
-    _id: {
-      type: mongoose.Types.ObjectId,
-    },
-    moves: [
-      {
-        x: {
-          type: Number,
-          required: true,
-        },
-        y: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+  roomId: {
+    type: String,
+    required: true,
+    unique: true,
   },
+  match: [
+    {
+      _id: {
+        type: mongoose.Types.ObjectId,
+      },
+      moves: [
+        {
+          x: {
+            type: Number,
+            required: true,
+          },
+          y: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+    },
+  ],
   chatLogs: [
     {
       username: {

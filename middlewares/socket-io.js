@@ -1,4 +1,5 @@
 const socketIO = require('socket.io');
+const mongoose = require('mongoose');
 const Matches = require('../models/mMatches');
 
 module.exports = {
@@ -66,13 +67,17 @@ module.exports = {
             username: response.currentUser.user.email,
             fullName: response.currentUser.user.fullName,
           };
+          const newMatchId = mongoose.Types.ObjectId();
           const newMatch = new Matches({
-            matchId: activeRooms[roomJoinedIndex].roomId,
             host: activeRooms[roomJoinedIndex].x.username,
             opponent: activeRooms[roomJoinedIndex].y.username,
-            match: {
-              moves: [],
-            },
+            roomId: response.roomId,
+            match: [
+              {
+                _id: newMatchId,
+                moves: [],
+              },
+            ],
             chatLogs: [],
             // -1: Left room Left Room Close Browser, 0: Unfinished (), 1: Complete
             status: 0,
@@ -82,7 +87,7 @@ module.exports = {
               roomId: response.roomId,
               roomDetails: activeRooms[roomJoinedIndex],
               // eslint-disable-next-line no-underscore-dangle
-              matchId: newMatch._id,
+              matchId: newMatchId,
             });
           });
         } else {
@@ -102,7 +107,16 @@ module.exports = {
       });
 
       socket.on('client-make-move', (response) => {
-        console.log(response);
+        console.log('Client moves:', response);
+        // const matchById = Matches.findOne({
+        //   roomId: response.roomId,
+        //   match: {
+        //     _id: { $elemMatch: mongoose.Types.ObjectId(response.matchId) },
+        //   },
+        // }).then((document) => {
+        //   console.log(document);
+        // });
+
         io.emit(`server-resp-move-${response.roomId}`, response);
       });
 
