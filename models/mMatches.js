@@ -10,6 +10,10 @@ const MatchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  opponent: {
+    type: String,
+    required: true,
+  },
   match: {
     _id: {
       type: mongoose.Types.ObjectId,
