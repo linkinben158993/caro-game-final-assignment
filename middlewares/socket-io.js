@@ -49,7 +49,8 @@ module.exports = {
 
       socket.on('create-room', (response) => {
         console.log(response);
-        activeRooms.push({ response, guests: [] });
+        response.guests = [];
+        activeRooms.push(response);
         socket.emit('created-room', response);
 
         // socket.join(response.roomId);
