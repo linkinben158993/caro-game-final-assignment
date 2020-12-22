@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3ccf6edc-457e-4411-ae96-2eb47a198980" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/passport.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/passport.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mUsers.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/mUsers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +93,7 @@
       <workItem from="1608532035737" duration="57000" />
       <workItem from="1608604834298" duration="13842000" />
       <workItem from="1608621998908" duration="23000" />
-      <workItem from="1608641598306" duration="10500000" />
+      <workItem from="1608641598306" duration="12720000" />
     </task>
     <servers />
   </component>

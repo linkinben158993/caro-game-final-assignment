@@ -50,7 +50,7 @@ passport.use(
       }
       // User not found
       if (!user) {
-        return done(null, false);
+        return done(null, { message: { msgBody: 'User not found', msgError: true } });
       }
 
       return user.checkPassword(password, done);

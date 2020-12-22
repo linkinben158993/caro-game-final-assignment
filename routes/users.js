@@ -52,12 +52,17 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     sameSite: 'strict',
   };
   if (req.isAuthenticated()) {
-    const { _id, email, role, fullName } = req.user;
-    const token = signTokenHelper.signToken(_id);
-    res.cookie('access_token', token, options);
-    res
-      .status(200)
-      .json({ isAuthenticated: true, user: { email, role, fullName }, access_token: token });
+    if (req.user.message) {
+      const { message } = req.user;
+      res.status(501).json({ isAuthenticated: false, message });
+    } else {
+      const { _id, email, role, fullName } = req.user;
+      const token = signTokenHelper.signToken(_id);
+      res.cookie('access_token', token, options);
+      res
+        .status(200)
+        .json({ isAuthenticated: true, user: { email, role, fullName }, access_token: token });
+    }
   }
 });
 

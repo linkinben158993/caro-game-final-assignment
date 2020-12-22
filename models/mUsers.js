@@ -55,7 +55,7 @@ UserSchema.methods.checkPassword = function (password, callBack) {
     }
 
     if (!isMatch) {
-      return callBack(null, isMatch);
+      return callBack(null, { message: { msgBody: 'Password not match!', msgError: true } });
     }
 
     return callBack(null, this);
