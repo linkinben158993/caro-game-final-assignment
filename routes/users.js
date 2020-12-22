@@ -1,26 +1,15 @@
 const express = require('express');
 const passport = require('passport');
-const JWT = require('jsonwebtoken');
+const signTokenHelper = require('./helper');
 // eslint-disable-next-line no-unused-vars
 const passportConfig = require('../middlewares/passport');
 const Users = require('../models/mUsers');
 
 const router = express.Router();
 
-const signToken = (userID) => {
-  const token = JWT.sign(
-    {
-      iss: process.env.secretOrKey,
-      sub: userID,
-    },
-    process.env.secretOrKey,
-    { expiresIn: 14 * 1000 * 60 * 60 * 24 },
-  );
-  return token;
-};
 /* GET users listing. */
 router.get('/', (req, res) => {
-  res.send('respond with a resource');
+  res.send('Should I Do This Route?');
 });
 
 router.post('/register', (req, res) => {
@@ -63,7 +52,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
   };
   if (req.isAuthenticated()) {
     const { _id, email, role, fullName } = req.user;
-    const token = signToken(_id);
+    const token = signTokenHelper.signToken(_id);
     res.cookie('access_token', token, options);
     res
       .status(200)

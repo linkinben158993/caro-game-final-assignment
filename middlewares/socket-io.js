@@ -116,7 +116,7 @@ module.exports = {
           document
             .save()
             .then(() => {
-              console.log('Save successfull');
+              // console.log('Save successfull');
             })
             .catch((err) => {
               console.log(err);
@@ -135,8 +135,42 @@ module.exports = {
       });
 
       socket.on('end-game', (response) => {
-        // Do something with response
         console.log(response);
+        if (!response.myTurn) {
+          console.log('This player win:', response.currentUser.user.email);
+          Matches.findOne(
+            { roomId: response.roomId },
+            { match: { $elemMatch: { _id: response.matchId } } }
+          )
+            .then((document) => {
+              console.log(document);
+              console.log(document.match[0]._id);
+              Matches.updateOne(
+                {
+                  _id: document._id,
+                  'match._id': document.match[0]._id,
+                },
+                {
+                  $set: {
+                    'match.0.winner': response.currentUser.user.email,
+                    'match.0.status': 1,
+                  },
+                },
+                {
+                  upsert: true,
+                },
+              )
+                .then(() => {
+                  // console.log('Update Game Status Successfully');
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       });
 
       socket.on('disconnect', () => {
