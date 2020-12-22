@@ -8,7 +8,7 @@ module.exports = {
         sub: userID,
       },
       process.env.secretOrKey,
-      { expiresIn: 14 * 1000 * 60 * 60 * 24 }
+      { expiresIn: 14 * 1000 * 60 * 60 * 24 },
     );
     return token;
   },

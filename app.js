@@ -6,10 +6,25 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const session = require('express-session');
 const passport = require('passport');
 
 const app = express();
+
+dotenv.config();
+
+app.use(
+  session({
+    secret: process.env.secretOrKey,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  }),
+);
+
+// For later research
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.enable('trust proxy');
 // app.options('*', cors());
@@ -34,7 +49,6 @@ app.use(
     credentials: true,
   }),
 );
-dotenv.config();
 
 const http = require('http');
 const socket = require('./middlewares/socket-io');
@@ -74,7 +88,7 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.secretOrKey));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
