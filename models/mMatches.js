@@ -56,6 +56,20 @@ const MatchSchema = new mongoose.Schema({
   ],
 });
 
+MatchSchema.statics.updateMoves = function (roomId, matchId, move, callBack) {
+  this.findOne({ roomId }, { match: { $elemMatch: { _id: matchId } } })
+    .then((document) => {
+      document.match[0].moves.push(move);
+      document
+        .save()
+        .then(() => {
+          callBack(null, true);
+        })
+        .catch((err) => callBack(err));
+    })
+    .catch((err) => callBack(null, err));
+};
+
 MatchSchema.statics.getMatchByEmail = function (email, callBack) {
   this.find({
     $or: [{ host: email }, { opponent: email }],

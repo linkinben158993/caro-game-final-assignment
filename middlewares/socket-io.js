@@ -12,6 +12,7 @@ module.exports = {
     const activeSockets = [];
     const onlineUsers = [];
     const activeRooms = [];
+    let newGameRoomId = [];
 
     console.log('Current active sockets:', activeSockets.length);
     console.log('Current online users:', onlineUsers.length);
@@ -80,7 +81,6 @@ module.exports = {
             ],
             chatLogs: [],
             // -1: Left room Left Room Close Browser, 0: Unfinished (), 1: Complete
-            status: 0,
           });
           newMatch.save().then(() => {
             activeRooms[roomJoinedIndex].currentMatch = newMatchId;
@@ -108,19 +108,11 @@ module.exports = {
       });
 
       socket.on('client-make-move', (response) => {
-        Matches.findOne(
-          { roomId: response.roomId },
-          { match: { $elemMatch: { _id: response.matchId } } },
-        ).then((document) => {
-          document.match[0].moves.push(response.move);
-          document
-            .save()
-            .then(() => {
-              // console.log('Save successfull');
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+        Matches.updateMoves(response.roomId, response.matchId, response.move, (err, document) => {
+          if (err) {
+            console.log(err);
+            // console.log('Update Move Failed');
+          } // Update Move Successful
         });
 
         io.emit(`server-resp-move-${response.roomId}`, response);
@@ -135,16 +127,13 @@ module.exports = {
       });
 
       socket.on('end-game', (response) => {
-        console.log(response);
         if (!response.myTurn) {
-          console.log('This player win:', response.currentUser.user.email);
+          // Find room and match that has ended and save results into database
           Matches.findOne(
             { roomId: response.roomId },
             { match: { $elemMatch: { _id: response.matchId } } }
           )
             .then((document) => {
-              console.log(document);
-              console.log(document.match[0]._id);
               Matches.updateOne(
                 {
                   _id: document._id,
@@ -152,16 +141,17 @@ module.exports = {
                 },
                 {
                   $set: {
-                    'match.0.winner': response.currentUser.user.email,
-                    'match.0.status': 1,
+                    'match.$.winner': response.currentUser.user.email,
+                    'match.$.status': 1,
                   },
                 },
                 {
                   upsert: true,
                 },
               )
-                .then(() => {
+                .then((res) => {
                   // console.log('Update Game Status Successfully');
+                  // console.log(res);
                 })
                 .catch((err) => {
                   console.log(err);
@@ -171,6 +161,50 @@ module.exports = {
               console.log(err);
             });
         }
+      });
+
+      socket.on('new-game', (response) => {
+        const roomNewGameIndex = activeRooms.map((id) => id.roomId).indexOf(response);
+        // If new game signal is emit by one person only
+        if (newGameRoomId.map((id) => id.roomId).indexOf(response) === -1) {
+          newGameRoomId.push({
+            roomId: response,
+          });
+        } else {
+          newGameRoomId = [];
+          Matches.findOne({ roomId: response })
+            .then((document) => {
+              const newMatchId = mongoose.Types.ObjectId();
+              document.match.push({
+                _id: newMatchId,
+                moves: [],
+              });
+              document
+                .save()
+                .then(() => {
+                  activeRooms[roomNewGameIndex].currentMatch = newMatchId;
+                  io.emit('player-join-game', {
+                    roomId: response,
+                    roomDetails: activeRooms[roomNewGameIndex],
+                    // eslint-disable-next-line no-underscore-dangle
+                    matchId: newMatchId,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+
+      socket.on('exit-room', (response) => {
+        const deleteRoom = activeRooms.map((id) => id.roomId).indexOf(response);
+        activeRooms.splice(deleteRoom, 1);
+        io.emit('active-rooms', activeRooms);
+        io.emit(`exit-room-${response}`);
       });
 
       socket.on('disconnect', () => {
