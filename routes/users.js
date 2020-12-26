@@ -6,7 +6,6 @@ const passportConfig = require('../middlewares/passport');
 const Users = require('../models/mUsers');
 
 const router = express.Router();
-const bodyParser = require('body-parser').json();
 
 /* GET users listing. */
 router.get('/', (req, res) => {
@@ -65,36 +64,6 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     }
   }
 });
-
-// router.post('/login', bodyParser, (req, res, next) => {
-//   passport.authenticate('local', { session: false }, (err, user, info) => {
-//     const options = {
-//       expires: new Date(Date.now() + 14 * 1000 * 60 * 60 * 24),
-//       secure: true,
-//       httpOnly: true,
-//       sameSite: 'strict',
-//     };
-//     console.log('Error:', err);
-//     console.log('User:', user);
-//     console.log('Info:', info);
-//     console.log('Is Authenticated:', req.isAuthenticated());
-//     if (!user) {
-//       res.status(200).json({ message: { msgBody: 'User not found!', msgError: true } });
-//     } else {
-//       const { _id, email, role, fullName } = user;
-//       const token = signTokenHelper.signToken(_id);
-//       res.cookie('access_token', token, options);
-//       res.status(200).json({
-//         message: {
-//           msgBody: 'Retrieved User!',
-//           msgError: true,
-//           user: { email, role, fullName },
-//           access_token: token,
-//         },
-//       });
-//     }
-//   })(req, res, next);
-// });
 
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
   if (req.user.role !== 1) {

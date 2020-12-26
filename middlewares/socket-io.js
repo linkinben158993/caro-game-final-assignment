@@ -12,7 +12,7 @@ module.exports = {
     const activeSockets = [];
     const onlineUsers = [];
     const activeRooms = [];
-    let newGameRoomId = [];
+    const newGameRoomId = [];
 
     console.log('Current active sockets:', activeSockets.length);
     console.log('Current online users:', onlineUsers.length);
@@ -163,6 +163,7 @@ module.exports = {
         }
       });
 
+      // This response contains roomId only
       socket.on('new-game', (response) => {
         const roomNewGameIndex = activeRooms.map((id) => id.roomId).indexOf(response);
         // If new game signal is emit by one person only
@@ -171,7 +172,8 @@ module.exports = {
             roomId: response,
           });
         } else {
-          newGameRoomId = [];
+          // If two people then remove from array for another new game event
+          newGameRoomId.splice(newGameRoomId.map((id) => id.roomId).indexOf(response));
           Matches.findOne({ roomId: response })
             .then((document) => {
               const newMatchId = mongoose.Types.ObjectId();
