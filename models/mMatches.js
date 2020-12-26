@@ -82,6 +82,7 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
       const listMatchInRoom = document.map((data) => {
         const newList = data.match.map((match) => ({
           id: match._id,
+          winner: match.winner,
           status: match.status,
           opponent: data.opponent,
           host: data.host,
