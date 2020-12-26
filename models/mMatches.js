@@ -94,7 +94,6 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
       for (let i = 0; i < listMatchInRoom.length; i += 1) {
         listMatch = listMatch.concat(listMatchInRoom[i]);
       }
-      console.log(listMatchInRoom);
       // User has more than one match and stuff
       return callBack(null, listMatch);
     })
