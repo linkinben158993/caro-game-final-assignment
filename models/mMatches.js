@@ -79,8 +79,23 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
         // User hasn't played any match
         return callBack(null, 0);
       }
+      const listMatchInRoom = document.map((data) => {
+        const newList = data.match.map((match) => ({
+          id: match._id,
+          status: match.status,
+          opponent: data.opponent,
+          host: data.host,
+        }));
+        return newList;
+      });
+
+      let listMatch = [];
+      for (let i = 0; i < listMatchInRoom.length; i += 1) {
+        listMatch = listMatch.concat(listMatchInRoom[i]);
+      }
+      console.log(listMatchInRoom);
       // User has more than one match and stuff
-      return callBack(null, document);
+      return callBack(null, listMatch);
     })
     .catch((err) => callBack(err));
 };
