@@ -104,13 +104,15 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
 MatchSchema.statics.getMatchById = function (matchId, callBack) {
   this.findOne(
     { match: { $elemMatch: { _id: matchId } } },
-    { host: 1, opponent: 1, match: { $elemMatch: { _id: matchId } } }
-  ).then((document) => {
-    if (document === null || document.length === 0) {
-      return callBack(null, 0);
-    }
-    return callBack(null, document);
-  });
+    { host: 1, opponent: 1, match: { $elemMatch: { _id: matchId } } },
+  )
+    .then((document) => {
+      if (document === null || document.length === 0) {
+        return callBack(null, 0);
+      }
+      return callBack(null, document);
+    })
+    .catch((err) => callBack(err));
 };
 
 module.exports = mongoose.model('Match', MatchSchema);
