@@ -200,11 +200,15 @@ module.exports = {
               console.log(err);
             });
         }
+        console.log('New Game Room Id On New Game: ', newGameRoomId);
       });
 
       socket.on('exit-room', (response) => {
         const deleteRoom = activeRooms.map((id) => id.roomId).indexOf(response);
         activeRooms.splice(deleteRoom, 1);
+        console.log('Current active sockets after exit room:', activeSockets.length);
+        console.log('Current online users after exit room:', onlineUsers.length);
+        console.log('Current active rooms after exit room:', activeRooms.length);
         io.emit('active-rooms', activeRooms);
         io.emit(`exit-room-${response}`);
       });
