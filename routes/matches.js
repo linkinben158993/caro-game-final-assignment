@@ -18,4 +18,14 @@ router.get('/my', passport.authenticate('jwt', { session: false }), (req, res) =
   });
 });
 
+router.get('/my/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Matches.getMatchById(req.params.id, (err, document) => {
+    if (err) {
+      res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
+    } else {
+      res.status(200).json({ success: true, message: 'Retrieved match by id!', data: document });
+    }
+  });
+});
+
 module.exports = router;

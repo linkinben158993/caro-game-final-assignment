@@ -81,6 +81,7 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
       }
       const listMatchInRoom = document.map((data) => {
         const newList = data.match.map((match) => ({
+          roomId: data._id,
           id: match._id,
           winner: match.winner,
           status: match.status,
@@ -98,6 +99,18 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
       return callBack(null, listMatch);
     })
     .catch((err) => callBack(err));
+};
+
+MatchSchema.statics.getMatchById = function (matchId, callBack) {
+  this.findOne(
+    { match: { $elemMatch: { _id: matchId } } },
+    { host: 1, opponent: 1, match: { $elemMatch: { _id: matchId } } }
+  ).then((document) => {
+    if (document === null || document.length === 0) {
+      return callBack(null, 0);
+    }
+    return callBack(null, document);
+  });
 };
 
 module.exports = mongoose.model('Match', MatchSchema);
