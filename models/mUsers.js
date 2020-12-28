@@ -62,4 +62,22 @@ UserSchema.methods.checkPassword = function (password, callBack) {
   });
 };
 
+UserSchema.methods.changePassword = function (user, oldPassword, newPassword, callBack) {
+  user.checkPassword(oldPassword, (err, isMatch) => {
+    if (err) {
+      return callBack(err);
+    }
+    if (isMatch.message) {
+      return callBack(null, {
+        message: {
+          msgBody: 'Old Password Does Not Match!',
+          msgError: true,
+        },
+      });
+    }
+
+    return callBack(null, newPassword, isMatch);
+  });
+};
+
 module.exports = mongoose.model('User', UserSchema);

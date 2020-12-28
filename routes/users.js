@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 const signTokenHelper = require('./helper');
 // eslint-disable-next-line no-unused-vars
 const passportConfig = require('../middlewares/passport');
@@ -63,6 +64,33 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
         .json({ isAuthenticated: true, user: { email, role, fullName }, access_token: token });
     }
   }
+});
+
+router.post('/info/password', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  req.user.changePassword(req.user, oldPassword, newPassword, (err, callBack, isMatch) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (callBack.message) {
+      res.status(500).json(callBack.message);
+    } else {
+      isMatch.set({ password: callBack });
+      isMatch
+        .save()
+        .then(() => {
+          res.status(200).json({
+            success: true,
+            message: { msgBody: 'Change Password Successfully!', msgError: false },
+          });
+        })
+        .catch((errSave) => {
+          res.status(200).json({
+            success: false,
+            message: { msgBody: 'Change Password Failed!', msgError: true, err: errSave },
+          });
+        });
+    }
+  });
 });
 
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
