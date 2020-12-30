@@ -5,18 +5,17 @@ const xoauth2 = require('xoauth2');
 dotenv.config();
 
 const email = process.env.nodeMailerEmail;
-const password = process.env.nodeMailerPassword;
 
 const transporter = nodeMailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true, // true for 465, false for other ports
   auth: {
-    type: 'OAUTH2',
-    user: email,
-    pass: password,
-    clientId: process.env.nodeMailerClId,
-    clientSecret: process.env.nodeMailerSecret,
+    xoauth2: xoauth2.createXOAuth2Generator({
+      user: email,
+      clientId: process.env.nodeMailerClId,
+      clientSecret: process.env.nodeMailerSecret,
+    }),
   },
   tls: {
     rejectUnauthorized: false,
