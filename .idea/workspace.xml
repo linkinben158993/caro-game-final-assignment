@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ccf6edc-457e-4411-ae96-2eb47a198980" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middlewares/node-mailer.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/node-mailer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +99,7 @@
       <workItem from="1609139832468" duration="1553000" />
       <workItem from="1609309980853" duration="1493000" />
       <workItem from="1609311485397" duration="16464000" />
-      <workItem from="1609338826786" duration="4980000" />
+      <workItem from="1609338826786" duration="5302000" />
     </task>
     <servers />
   </component>
