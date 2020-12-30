@@ -31,7 +31,10 @@ const UserSchema = new mongoose.Schema({
     // -1: guest, 0: user, 1: admin
     enum: [-1, 0, 1],
   },
-  // matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
+  // matches: [{ type: mongoose.Schema.Tif()ypes.ObjectId, ref: 'Match' }],
+  otp: {
+    type: Number,
+  },
 });
 
 UserSchema.pre('save', function (next) {
@@ -85,6 +88,30 @@ UserSchema.methods.changePassword = function (user, oldPassword, newPassword, ca
     }
 
     return callBack(null, newPassword, isMatch);
+  });
+};
+
+UserSchema.statics.createUserWithOTP = function (email, callBack) {
+  this.findOne({ email }, (err, user) => {
+    if (err) {
+      return callBack(err);
+    }
+    if (user) {
+      return callBack(null, {
+        message: {
+          msgBody: 'User exists, are you forgetting your password?',
+          msgError: true,
+        },
+      });
+    }
+
+    const OTP = Math.floor(Math.random() * 1000000);
+
+    // Return user's information and otp here, send mail here?
+    return callBack(null, {
+      email,
+      otp: OTP,
+    });
   });
 };
 

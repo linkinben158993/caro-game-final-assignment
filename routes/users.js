@@ -1,10 +1,11 @@
 const express = require('express');
 const passport = require('passport');
-const bcrypt = require('bcrypt');
 const signTokenHelper = require('./helper');
 // eslint-disable-next-line no-unused-vars
 const passportConfig = require('../middlewares/passport');
 const Users = require('../models/mUsers');
+const nodeMailer = require('../middlewares/node-mailer');
+const { TOKEN_OPTIONS } = require('./constants').TOKEN_OPTIONS;
 
 const router = express.Router();
 
@@ -15,15 +16,12 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
   const { username, password, name } = req.body;
-  console.log(name);
-  Users.findOne({ username }, (err, user) => {
+  Users.findOne({ email: username }, (err, user) => {
     if (err) {
-      console.log('Error!');
       res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
     }
     if (user) {
-      console.log('User Existed', user);
-      res.status(500).json({ message: { msgBody: 'Username Existed!', msgError: true } });
+      res.status(400).json({ message: { msgBody: 'Username Existed!', msgError: true } });
     } else {
       const newUser = new Users({
         email: username,
@@ -44,13 +42,53 @@ router.post('/register', (req, res) => {
   });
 });
 
+router.post('/register-email', (req, res) => {
+  const { email } = req.body;
+  Users.createUserWithOTP(email, (err, callBack) => {
+    if (err) {
+      res.status(500).json(err);
+    }
+    if (callBack.message) {
+      res.status(400).json(callBack.message);
+    } else {
+      const newUser = new Users({
+        email: callBack.email,
+        password: 'default-password',
+        role: 0,
+        fullName: callBack.email,
+        otp: callBack.otp,
+      });
+      newUser.save(async (err1) => {
+        if (err1) {
+          res.status(500).json({ message: { msgBody: 'An Error Has Occurred!', msgError: true } });
+        } else {
+          const result = await nodeMailer.registerByMail(callBack.email, callBack.otp);
+          if (!result.success) {
+            res.status(500).json({
+              message: {
+                msgBody: 'Something Happened With Our Email Service, Please Try Again Later.',
+                msgError: true,
+              },
+            });
+          } else {
+            res.status(201).json({
+              message: {
+                msgBody: 'An Account Has Been Created',
+                msgError: false,
+                info: {
+                  email: callBack.email,
+                  otp: callBack.otp,
+                },
+              },
+            });
+          }
+        }
+      });
+    }
+  });
+});
+
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
-  const options = {
-    expires: new Date(Date.now() + 14 * 1000 * 60 * 60 * 24),
-    secure: true,
-    httpOnly: true,
-    sameSite: 'strict',
-  };
   if (req.isAuthenticated()) {
     if (req.user.message) {
       const { message } = req.user;
@@ -58,7 +96,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     } else {
       const { _id, email, role, fullName } = req.user;
       const token = signTokenHelper.signToken(_id);
-      res.cookie('access_token', token, options);
+      res.cookie('access_token', token, TOKEN_OPTIONS);
       res
         .status(200)
         .json({ isAuthenticated: true, user: { email, role, fullName }, access_token: token });
