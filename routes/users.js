@@ -79,7 +79,8 @@ router.post('/info/password', passport.authenticate('jwt', { session: false }), 
     if (err) {
       res.status(500).json(err);
     } else if (callBack.message) {
-      res.status(500).json(callBack.message);
+      // User error should be bad request
+      res.status(400).json(callBack.message);
     } else {
       isMatch.set({ password: callBack });
       isMatch
