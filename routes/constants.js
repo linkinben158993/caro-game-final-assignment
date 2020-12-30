@@ -5,4 +5,5 @@ module.exports = {
     httpOnly: true,
     sameSite: 'strict',
   },
+  SERVER_ERROR: { message: { msgBody: 'An Error Has Occurred!', msgError: true } },
 };
