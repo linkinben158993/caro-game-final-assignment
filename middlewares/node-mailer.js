@@ -8,11 +8,14 @@ const password = process.env.nodeMailerPassword;
 
 const transporter = nodeMailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  port: 465,
+  secure: true, // true for 465, false for other ports
   auth: {
+    type: 'OAUTH2',
     user: email,
     pass: password,
+    clientId: process.env.nodeMailerClId,
+    clientSecret: process.env.nodeMailerSecret,
   },
   tls: {
     rejectUnauthorized: false,
@@ -33,10 +36,10 @@ module.exports = {
     return new Promise((resolve, reject) => {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log(error);
+          console.log('Error', error);
           reject({ success: false, error });
         }
-        console.log(info);
+        console.log('Info', info);
         resolve({ success: true, info });
       });
     });

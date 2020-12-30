@@ -132,6 +132,23 @@ router.post('/info/password', passport.authenticate('jwt', { session: false }), 
   });
 });
 
+router.post('/info/fullname', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { fullName } = req.body;
+  const newUser = req.user;
+  newUser.set({ fullName });
+  newUser
+    .save()
+    .then(() => {
+      res.status(200).json({
+        message: { msgBody: 'Change Full Name Successfully!', msgError: false },
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(CONSTANT.SERVER_ERROR);
+    });
+});
+
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
   if (req.user.role !== 1) {
     res.status(400).json({
