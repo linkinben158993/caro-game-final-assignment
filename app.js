@@ -62,7 +62,7 @@ const matchesRouter = require('./routes/matches');
 
 // Mongo configuration
 mongoose
-  .connect(process.env.URI, {
+  .connect(process.env.URI || 'localhost:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

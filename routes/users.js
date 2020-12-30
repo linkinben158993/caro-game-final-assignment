@@ -66,6 +66,13 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
   }
 });
 
+router.post('/info/edit', passport.authenticate('jwt', { session: false }), (req, res) => {
+  // Avatar can be done later
+  const { fullName, avatar } = req.body;
+  const updateUser = req.user;
+  console.log(updateUser);
+});
+
 router.post('/info/password', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { oldPassword, newPassword } = req.body;
   req.user.changePassword(req.user, oldPassword, newPassword, (err, callBack, isMatch) => {

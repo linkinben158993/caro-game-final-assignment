@@ -63,7 +63,15 @@ UserSchema.methods.checkPassword = function (password, callBack) {
 };
 
 UserSchema.methods.changePassword = function (user, oldPassword, newPassword, callBack) {
-  user.checkPassword(oldPassword, (err, isMatch) => {
+  if (oldPassword === newPassword) {
+    return callBack(null, {
+      message: {
+        msgBody: 'New Password Should Be Different From Old Password!',
+        msgError: true,
+      },
+    });
+  }
+  return user.checkPassword(oldPassword, (err, isMatch) => {
     if (err) {
       return callBack(err);
     }
