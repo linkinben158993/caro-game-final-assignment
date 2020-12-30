@@ -32,6 +32,9 @@ module.exports = {
       text:
         `Nhập mã OTP tương ứng để kích hoạt email của bạn: ${otp} \n`
         + 'Vui lòng không cung cấp OTP này ch ai khác!',
+      auth: {
+        user: email,
+      },
     };
     return new Promise((resolve, reject) => {
       transporter.sendMail(mailOptions, (error, info) => {
