@@ -53,9 +53,9 @@ module.exports = {
     const mailOptions = {
       from: `"Super Caro" ${email}`,
       to: `${receiverEmail}`,
-      subject: 'Reset Your Password',
+      subject: 'Resend OTP',
       text:
-        `Provide Following OTP To Reset Your Password: ${otp} \n`
+        `Provide Following OTP To Activate Or Reset Your Password Your Password: ${otp} \n`
         + 'If this is not you, ignore this email!',
     };
     return new Promise((resolve) => {
