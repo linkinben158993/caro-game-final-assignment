@@ -40,8 +40,8 @@ const createAccount = (req, res, email, password, fullName, otp, isNormalFlow) =
               email,
               otp,
             },
-            isNormalFlow,
           },
+          isNormalFlow,
         });
       }
     }
@@ -88,7 +88,8 @@ module.exports = {
             });
           } else if (!callBack.user.activated && callBack.user.otp !== -1) {
             res.status(501).json({
-              message: { msgBody: 'User has not been activated', msgError: true, isNormalFlow },
+              message: { msgBody: 'User has not been activated', msgError: true },
+              isNormalFlow,
             });
           } else {
             res.status(501).json({
