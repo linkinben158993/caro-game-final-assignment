@@ -13,8 +13,10 @@ const transporter = nodeMailer.createTransport({
   auth: {
     user: email,
     pass: password,
+    // Get From Google Console OAuth Credential
     clientId: process.env.nodeMailerClId,
     clientSecret: process.env.nodeMailerSecret,
+    // Get From Google Developer OAuth20 PlayGround
     refreshToken: process.env.nodeMailerRefreshToken,
   },
   tls: {

@@ -35,6 +35,9 @@ const UserSchema = new mongoose.Schema({
   otp: {
     type: Number,
   },
+  activated: {
+    type: Boolean,
+  },
 });
 
 UserSchema.pre('save', function (next) {

@@ -1,10 +1,9 @@
 const express = require('express');
 const passport = require('passport');
-const signTokenHelper = require('./helper');
+const Helper = require('./helper');
 // eslint-disable-next-line no-unused-vars
 const passportConfig = require('../middlewares/passport');
 const Users = require('../models/mUsers');
-const nodeMailer = require('../middlewares/node-mailer');
 const CONSTANT = require('./constants');
 
 const router = express.Router();
@@ -15,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { username, password, name } = req.body;
+  const { username, password, name, isNormalFlow } = req.body;
   Users.findOne({ email: username }, (err, user) => {
     if (err) {
       res.status(500).json(CONSTANT.SERVER_ERROR);
@@ -43,54 +42,85 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/register-email', (req, res) => {
-  const { email } = req.body;
-  Users.createUserWithOTP(email, (err, callBack) => {
-    if (err) {
-      res.status(500).json(CONSTANT.SERVER_ERROR);
-    }
-    if (callBack.message) {
-      res.status(400).json(callBack);
-    } else {
-      const newUser = new Users({
-        email: callBack.email,
-        password: 'default-password',
-        role: 0,
-        fullName: callBack.email,
-        otp: callBack.otp,
-      });
-      newUser.save(async (err1) => {
-        if (err1) {
-          res.status(500).json(CONSTANT.SERVER_ERROR);
-        } else {
-          const result = await nodeMailer.registerByMail(callBack.email, callBack.otp);
-          if (!result.success) {
-            res.status(500).json(CONSTANT.SERVER_ERROR);
-          } else {
-            res.status(201).json({
+  const { email, password } = req.body;
+  Helper.createAccountByGmail(req, res, email, password);
+});
+
+router.post('/check-otp', (req, res) => {
+  const { email, otp, password } = req.body;
+  // Flow activate otp
+  if (!password) {
+    Users.findOne({ email }, (err, foundUser) => {
+      if (err) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else if (Number.parseInt(otp) === foundUser.otp) {
+        foundUser.set({ otp: -1, activated: true });
+        foundUser
+          .save()
+          .then(() => {
+            res.status(200).json({
+              success: true,
               message: {
-                msgBody: 'An Account Has Been Created',
+                msgBody: 'Your Account Has Been Activated',
                 msgError: false,
-                info: {
-                  email: callBack.email,
-                  otp: callBack.otp,
-                },
               },
             });
-          }
-        }
-      });
-    }
-  });
+          })
+          .catch(() => {
+            res.status(500).json(CONSTANT.SERVER_ERROR);
+          });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: {
+            msgBody: 'OTP Does Not Match',
+            msgError: true,
+          },
+        });
+      }
+    });
+  }
+  // Flow reset password
+  else {
+    Users.findOne({ email }, (err, foundUser) => {
+      if (err) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else if (Number.parseInt(otp) === foundUser.otp) {
+        console.log('OTP Match!');
+        foundUser.set({ otp: -1, activated: true });
+        foundUser
+          .save()
+          .then(() => {
+            res.status(200).json({
+              success: true,
+              message: {
+                msgBody: 'Your Account Has Been Activated',
+                msgError: false,
+              },
+            });
+          })
+          .catch(() => {
+            res.status(500).json(CONSTANT.SERVER_ERROR);
+          });
+      }
+    });
+  }
 });
 
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user.message) {
       const { message } = req.user;
-      res.status(501).json({ isAuthenticated: false, message });
+      const { username, password, isNormalFlow } = req.body;
+      if (isNormalFlow) {
+        res.status(501).json({ isAuthenticated: false, message });
+      } else {
+        console.log('Create your GG Account Here!');
+        Helper.createAccountByGmail(req, res, username, password);
+      }
     } else {
       const { _id, email, role, fullName } = req.user;
-      const token = signTokenHelper.signToken(_id);
+      const token = Helper.signToken(_id);
       res.cookie('access_token', token, CONSTANT.TOKEN_OPTIONS);
       res
         .status(200)
