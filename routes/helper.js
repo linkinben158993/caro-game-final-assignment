@@ -16,7 +16,7 @@ module.exports = {
     return token;
   },
 
-  createAccountByGmail: (req, res, email, password) => {
+  createAccountByGmail: (req, res, email, password, fullName) => {
     Users.createUserWithOTP(email, (err, callBack) => {
       if (err) {
         res.status(500).json(CONSTANT.SERVER_ERROR);
@@ -28,9 +28,9 @@ module.exports = {
           email: callBack.email,
           password,
           role: 0,
-          fullName: callBack.email,
+          fullName,
           otp: callBack.otp,
-          activated: true,
+          activated: false,
         });
         newUser.save(async (err1) => {
           if (err1) {

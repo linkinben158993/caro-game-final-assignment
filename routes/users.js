@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { email, password } = req.body;
-  Helper.createAccountByGmail(req, res, email, password);
+  const { username, password, name } = req.body;
+  Helper.createAccountByGmail(req, res, username, password, name);
 });
 
 router.post('/check-otp', (req, res) => {
@@ -72,8 +72,8 @@ router.post('/check-otp', (req, res) => {
               },
             });
           })
-          .catch((err) => {
-            console.log(err);
+          .catch((err1) => {
+            console.log(err1);
             res.status(500).json(CONSTANT.SERVER_ERROR);
           });
       }
@@ -86,10 +86,12 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     if (req.user.message) {
       const { message } = req.user;
       const { username, password, isNormalFlow } = req.body;
+      // Login bằng tài khoản, mật khẩu bình thường
       if (isNormalFlow) {
         res.status(501).json({ isAuthenticated: false, message });
       } else {
-        Helper.createAccountByGmail(req, res, username, password);
+        const { fullName } = req.body;
+        Helper.createAccountByGmail(req, res, username, password, fullName);
       }
     } else {
       const { _id, email, role, fullName } = req.user;

@@ -52,6 +52,10 @@ passport.use(
       if (!user) {
         return done(null, { message: { msgBody: 'User not found', msgError: true } });
       }
+      // User has not been activated
+      if (!user.activated) {
+        return done(null, { message: { msgBody: 'User has not been activated', msgError: true } });
+      }
 
       return user.checkPassword(password, done);
     });
