@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
   const { username, password, fullName, isNormalFlow } = req.body;
-  Helper.createAccountByGmail(req, res, username, password, fullName, isNormalFlow);
+  Helper.createAccountNormal(req, res, username, password, fullName, isNormalFlow);
 });
 
 router.post('/check-otp', (req, res) => {
