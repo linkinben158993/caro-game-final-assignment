@@ -102,9 +102,10 @@ UserSchema.statics.createUserWithOTP = function (email, callBack) {
     if (user) {
       return callBack(null, {
         message: {
-          msgBody: 'User exists, are you forgetting your password?',
+          msgBody: 'User exists, Logging In',
           msgError: true,
         },
+        user,
       });
     }
 

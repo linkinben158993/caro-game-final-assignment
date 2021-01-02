@@ -108,6 +108,8 @@ module.exports = {
       });
 
       socket.on('client-make-move', (response) => {
+        const roomMakeMove = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
+        console.log(activeRooms[roomMakeMove]);
         Matches.updateMoves(response.roomId, response.matchId, response.move, (err, document) => {
           if (err) {
             console.log(err);
@@ -185,6 +187,7 @@ module.exports = {
                 .save()
                 .then(() => {
                   activeRooms[roomNewGameIndex].currentMatch = newMatchId;
+                  activeRooms[roomNewGameIndex].moves = [];
                   io.emit('player-join-game', {
                     roomId: response,
                     roomDetails: activeRooms[roomNewGameIndex],
