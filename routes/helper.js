@@ -24,7 +24,7 @@ module.exports = {
       }
       if (callBack.message) {
         const token = signToken(callBack.user._id);
-        if (!callBack.user.activated) {
+        if (!callBack.user.activated && callBack.user.otp !== -1) {
           res
             .status(501)
             .json({ message: { msgBody: 'User has not been activated', msgError: true } });
