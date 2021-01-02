@@ -14,34 +14,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { username, password, name, isNormalFlow } = req.body;
-  Users.findOne({ email: username }, (err, user) => {
-    if (err) {
-      res.status(500).json(CONSTANT.SERVER_ERROR);
-    }
-    if (user) {
-      res.status(400).json({ message: { msgBody: 'Username Existed!', msgError: true } });
-    } else {
-      const newUser = new Users({
-        email: username,
-        password,
-        role: 0,
-        fullName: name,
-      });
-      newUser.save((err1) => {
-        if (err1) {
-          res.status(500).json(CONSTANT.SERVER_ERROR);
-        } else {
-          res
-            .status(201)
-            .json({ message: { msgBody: 'An Account Has Been Created', msgError: false } });
-        }
-      });
-    }
-  });
-});
-
-router.post('/register-email', (req, res) => {
   const { email, password } = req.body;
   Helper.createAccountByGmail(req, res, email, password);
 });
