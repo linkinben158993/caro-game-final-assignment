@@ -28,12 +28,35 @@ module.exports = {
   registerByMail: (receiverEmail, otp) => {
     console.log('Sending mail!');
     const mailOptions = {
-      from: `"Caro Xịn Sò" ${email}`,
+      from: `"Super Caro" ${email}`,
       to: `${receiverEmail}`,
-      subject: 'Xác thực Email Qua Google',
+      subject: 'Activate Your Account Via Google',
       text:
-        `Nhập mã OTP tương ứng để kích hoạt email của bạn: ${otp} \n`
-        + 'Vui lòng không cung cấp OTP này ch ai khác!',
+        `Provide Following OTP To Activate Your Account: ${otp} \n`
+        + 'Please do not provide this OTP for anyone else!',
+    };
+    return new Promise((resolve) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error: ', error);
+          resolve({ success: false, error });
+        } else {
+          console.log('Info:  ', info);
+          resolve({ success: true, info });
+        }
+      });
+    });
+  },
+
+  resendOTP: (receiverEmail, otp) => {
+    console.log('Sending mail!');
+    const mailOptions = {
+      from: `"Super Caro" ${email}`,
+      to: `${receiverEmail}`,
+      subject: 'Reset Your Password',
+      text:
+        `Provide Following OTP To Reset Your Password: ${otp} \n`
+        + 'If this is not you, ignore this email!',
     };
     return new Promise((resolve) => {
       transporter.sendMail(mailOptions, (error, info) => {

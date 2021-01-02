@@ -24,8 +24,9 @@ const createAccount = (req, res, email, password, fullName, otp, isNormalFlow) =
     otp,
     activated: false,
   });
-  newUser.save(async (err1) => {
-    if (err1) {
+  newUser.save(async (err) => {
+    if (err) {
+      console.log(err);
       res.status(500).json(CONSTANT.SERVER_ERROR);
     } else {
       const result = await nodeMailer.registerByMail(email, otp);
@@ -50,6 +51,44 @@ const createAccount = (req, res, email, password, fullName, otp, isNormalFlow) =
 
 module.exports = {
   signToken,
+
+  resetAccount: (req, res, email) => {
+    Users.findOne({ email }, async (err, user) => {
+      if (err) {
+        res.status(501).json(CONSTANT.SERVER_ERROR);
+      }
+      if (!user) {
+        res.status(501).json({
+          message: {
+            msgBody: 'User Not Exists',
+            msgError: true,
+          },
+        });
+      }
+      const OTP = Math.floor(Math.random() * 1000000);
+
+      const result = await nodeMailer.resendOTP(email, OTP);
+      if (!result.success) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        user.set({ otp: OTP });
+        user
+          .save()
+          .then(() => {
+            res.status(201).json({
+              message: {
+                msgBody: `An Email Has Been Sent To: ${email}`,
+                msgError: false,
+              },
+            });
+          })
+          .catch(() => {
+            res.status(500).json(CONSTANT.SERVER_ERROR);
+          });
+      }
+    });
+  },
+
   createAccountNormal: (req, res, email, password, fullName, isNormalFlow) => {
     Users.createUserWithOTP(email, (err, callBack) => {
       if (err) {

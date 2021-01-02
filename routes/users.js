@@ -18,6 +18,11 @@ router.post('/register', (req, res) => {
   Helper.createAccountNormal(req, res, username, password, fullName, isNormalFlow);
 });
 
+router.post('/resend-otp', (req, res) => {
+  const { email } = req.body;
+  Helper.resetAccount(req, res, email);
+});
+
 router.post('/check-otp', (req, res) => {
   const { email, otp, password } = req.body;
   // Flow activate otp
