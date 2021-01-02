@@ -84,6 +84,7 @@ router.post('/check-otp', (req, res) => {
   else {
     Users.findOne({ email }, (err, foundUser) => {
       if (err) {
+        console.log(err);
         res.status(500).json(CONSTANT.SERVER_ERROR);
       } else if (Number.parseInt(otp) === foundUser.otp) {
         console.log('OTP Match!');
@@ -99,7 +100,8 @@ router.post('/check-otp', (req, res) => {
               },
             });
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log(err);
             res.status(500).json(CONSTANT.SERVER_ERROR);
           });
       }
@@ -115,7 +117,6 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
       if (isNormalFlow) {
         res.status(501).json({ isAuthenticated: false, message });
       } else {
-        console.log('Create your GG Account Here!');
         Helper.createAccountByGmail(req, res, username, password);
       }
     } else {
