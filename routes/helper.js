@@ -17,18 +17,18 @@ const signToken = (userID) => {
 
 module.exports = {
   signToken,
-  createAccountByGmail: (req, res, email, password, fullName) => {
+  createAccountByGmail: (req, res, email, password, fullName, isNormalFlow) => {
     Users.createUserWithOTP(email, (err, callBack) => {
       if (err) {
         res.status(500).json(CONSTANT.SERVER_ERROR);
       }
       if (callBack.message) {
-        const token = signToken(callBack.user._id);
         if (!callBack.user.activated && callBack.user.otp !== -1) {
-          res
-            .status(501)
-            .json({ message: { msgBody: 'User has not been activated', msgError: true } });
+          res.status(501).json({
+            message: { msgBody: 'User has not been activated', msgError: true, isNormalFlow },
+          });
         } else {
+          const token = signToken(callBack.user._id);
           res.status(200).json({
             isAuthenticated: true,
             user: {
@@ -40,6 +40,7 @@ module.exports = {
           });
         }
       } else {
+        // If user register with normal flow
         const newUser = new Users({
           email: callBack.email,
           password,
@@ -64,6 +65,7 @@ module.exports = {
                     email: callBack.email,
                     otp: callBack.otp,
                   },
+                  isNormalFlow,
                 },
               });
             }

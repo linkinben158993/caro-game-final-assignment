@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  const { username, password, name } = req.body;
-  Helper.createAccountByGmail(req, res, username, password, name);
+  const { username, password, fullName, isNormalFlow } = req.body;
+  Helper.createAccountByGmail(req, res, username, password, fullName, isNormalFlow);
 });
 
 router.post('/check-otp', (req, res) => {
@@ -91,7 +91,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
         res.status(501).json({ isAuthenticated: false, message });
       } else {
         const { fullName } = req.body;
-        Helper.createAccountByGmail(req, res, username, password, fullName);
+        Helper.createAccountByGmail(req, res, username, password, fullName, isNormalFlow);
       }
     } else {
       const { _id, email, role, fullName } = req.user;
