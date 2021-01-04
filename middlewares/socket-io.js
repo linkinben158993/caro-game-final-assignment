@@ -27,13 +27,15 @@ module.exports = {
 
       socket.on('client-login', (response) => {
         // On refresh onlineUsers may be duplicated
-        if (onlineUsers.map((item) => item.email).indexOf(response.user.email) === -1) {
-          onlineUsers.push({ email: response.user.email, fullName: response.user.fullName });
-        }
-        console.log('Current active sockets after client-login:', activeSockets.length);
-        console.log('Current online users after client-login:', onlineUsers.length);
+        if (response != null) {
+          if (onlineUsers.map((item) => item.email).indexOf(response.user.email) === -1) {
+            onlineUsers.push({ email: response.user.email, fullName: response.user.fullName });
+          }
+          console.log('Current active sockets after client-login:', activeSockets.length);
+          console.log('Current online users after client-login:', onlineUsers.length);
 
-        io.emit('online-users', onlineUsers);
+          io.emit('online-users', onlineUsers);
+        }
       });
 
       socket.on('client-logout', (response) => {
@@ -51,6 +53,7 @@ module.exports = {
 
       socket.on('create-room', (response) => {
         response.guests = [];
+        response.moves = [];
         activeRooms.push(response);
         socket.emit('created-room', response);
 
@@ -109,13 +112,18 @@ module.exports = {
 
       socket.on('client-make-move', (response) => {
         const roomMakeMove = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
-        console.log(activeRooms[roomMakeMove]);
+        const Move = {
+          move: response.move,
+          mover: response.player,
+        };
+        activeRooms[roomMakeMove].moves.push(Move);
         Matches.updateMoves(response.roomId, response.matchId, response.move, (err, document) => {
           if (err) {
             console.log(err);
             // console.log('Update Move Failed');
           } // Update Move Successful
         });
+        console.log("This room's move: ", activeRooms[roomMakeMove].moves);
 
         io.emit(`server-resp-move-${response.roomId}`, response);
       });
@@ -128,7 +136,18 @@ module.exports = {
         });
       });
 
+      // On client refresh will emit this
+      socket.on('moves', (response) => {
+        const roomRefresh = activeRooms.map((id) => id.roomId).indexOf(response);
+        // Empty Moves Array For Next Match
+        io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh].moves);
+      });
+
       socket.on('end-game', (response) => {
+        const roomEndGame = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
+        // Empty Moves Array For Next Match
+        activeRooms[roomEndGame].moves = [];
+
         if (!response.myTurn) {
           // Find room and match that has ended and save results into database
           Matches.findOne(

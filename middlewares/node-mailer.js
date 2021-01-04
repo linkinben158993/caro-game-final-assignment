@@ -61,10 +61,10 @@ module.exports = {
     return new Promise((resolve) => {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log('Error: ', error);
+          console.log('Error Sending Mail!');
           resolve({ success: false, error });
         } else {
-          console.log('Info:  ', info);
+          console.log('Mail Should Be Sent');
           resolve({ success: true, info });
         }
       });
