@@ -20,8 +20,20 @@ router.post('/register', (req, res) => {
 
 router.post('/resend-otp', (req, res) => {
   // Should have flag OTP or Password
-  const { email } = req.body;
-  Helper.resetAccountOTP(req, res, email);
+  const { resetAccount } = req.body;
+  if (typeof resetAccount === 'undefined') {
+    res.status(405).json({
+      message: {
+        msgBody: 'Method not supported!',
+        msgError: true,
+      },
+    });
+  } else if (!resetAccount) {
+    const { email } = req.body;
+    Helper.resetAccountOTP(req, res, email);
+  } else {
+    console.log('User want to reset password');
+  }
 });
 
 router.post('/check-otp', (req, res) => {
@@ -67,7 +79,7 @@ router.post('/check-otp', (req, res) => {
         res.status(500).json(CONSTANT.SERVER_ERROR);
       } else if (Number.parseInt(otp) === foundUser.otp) {
         console.log('OTP Match!');
-        foundUser.set({ otp: -1, activated: true });
+        foundUser.set({ otp: -1, activated: true, password });
         foundUser
           .save()
           .then(() => {
@@ -89,7 +101,14 @@ router.post('/check-otp', (req, res) => {
 });
 
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.body.isNormalFlow === 'undefined') {
+    res.status(405).json({
+      message: {
+        msgBody: 'Method not supported',
+        msgError: true,
+      },
+    });
+  } else if (req.isAuthenticated()) {
     if (req.user.message) {
       const { message } = req.user;
       const { username, password, isNormalFlow } = req.body;
