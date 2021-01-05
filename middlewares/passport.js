@@ -50,10 +50,12 @@ passport.use(
       }
       // User not found
       if (!user) {
+        console.log('Passport: User has not found!');
         return done(null, { message: { msgBody: 'User not found', msgError: true } });
       }
       // User has not been activated
       if (!user.activated) {
+        console.log('Passport: User has not been activated!');
         return done(null, { message: { msgBody: 'User has not been activated', msgError: true } });
       }
 

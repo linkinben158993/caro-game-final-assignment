@@ -7,7 +7,9 @@
     <list default="true" id="3ccf6edc-457e-4411-ae96-2eb47a198980" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middlewares/node-mailer.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/node-mailer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/socket-io.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/socket-io.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/passport.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/passport.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/helper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,6 +110,9 @@
       <workItem from="1609579207177" duration="1373000" />
       <workItem from="1609580595131" duration="3876000" />
       <workItem from="1609731133310" duration="3136000" />
+      <workItem from="1609734281345" duration="1290000" />
+      <workItem from="1609745546371" duration="1192000" />
+      <workItem from="1609819237120" duration="435000" />
     </task>
     <servers />
   </component>

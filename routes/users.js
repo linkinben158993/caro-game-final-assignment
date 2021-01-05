@@ -19,14 +19,16 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/resend-otp', (req, res) => {
+  // Should have flag OTP or Password
   const { email } = req.body;
-  Helper.resetAccount(req, res, email);
+  Helper.resetAccountOTP(req, res, email);
 });
 
 router.post('/check-otp', (req, res) => {
   const { email, otp, password } = req.body;
   // Flow activate otp
   if (!password) {
+    console.log('Flow activate account!');
     Users.findOne({ email }, (err, foundUser) => {
       if (err) {
         res.status(500).json(CONSTANT.SERVER_ERROR);
@@ -56,9 +58,9 @@ router.post('/check-otp', (req, res) => {
         });
       }
     });
-  }
-  // Flow reset password
-  else {
+  } else {
+    // Flow reset password
+    console.log('Flow reset account password!');
     Users.findOne({ email }, (err, foundUser) => {
       if (err) {
         console.log(err);

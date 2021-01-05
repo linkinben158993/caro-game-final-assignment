@@ -52,7 +52,7 @@ const createAccount = (req, res, email, password, fullName, otp, isNormalFlow) =
 module.exports = {
   signToken,
 
-  resetAccount: (req, res, email) => {
+  resetAccountOTP: (req, res, email) => {
     Users.findOne({ email }, async (err, user) => {
       if (err) {
         res.status(501).json(CONSTANT.SERVER_ERROR);

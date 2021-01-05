@@ -38,10 +38,10 @@ module.exports = {
     return new Promise((resolve) => {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log('Error: ', error);
+          console.log('Error Sending Mail!');
           resolve({ success: false, error });
         } else {
-          console.log('Info:  ', info);
+          console.log('Mail Should Be Sent');
           resolve({ success: true, info });
         }
       });
@@ -55,7 +55,30 @@ module.exports = {
       to: `${receiverEmail}`,
       subject: 'Resend OTP',
       text:
-        `Provide Following OTP To Activate Or Reset Your Password Your Password: ${otp} \n`
+        `Provide Following OTP To Activate Your Account: ${otp} \n`
+        + 'If this is not you, ignore this email!',
+    };
+    return new Promise((resolve) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error Sending Mail!');
+          resolve({ success: false, error });
+        } else {
+          console.log('Mail Should Be Sent');
+          resolve({ success: true, info });
+        }
+      });
+    });
+  },
+
+  resetPassword: (receiverEmail, otp) => {
+    console.log('Sending mail!');
+    const mailOptions = {
+      from: `"Super Caro" ${email}`,
+      to: `${receiverEmail}`,
+      subject: 'Resend OTP For Resetting Password',
+      text:
+        `Provide Following OTP To Activate Reset Your Password Your Password: ${otp} \n`
         + 'If this is not you, ignore this email!',
     };
     return new Promise((resolve) => {
