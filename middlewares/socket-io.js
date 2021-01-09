@@ -138,9 +138,14 @@ module.exports = {
 
       // On client refresh will emit this
       socket.on('moves', (response) => {
-        const roomRefresh = activeRooms.map((id) => id.roomId).indexOf(response);
-        // Empty Moves Array For Next Match
-        io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh].moves);
+        if (response !== null) {
+          const roomRefresh = activeRooms.map((id) => id.roomId).indexOf(response);
+          // Response room's move
+          if (roomRefresh !== -1) {
+            console.log('Request moves for room: ', response);
+            io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh].moves);
+          }
+        }
       });
 
       socket.on('end-game', (response) => {

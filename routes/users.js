@@ -112,7 +112,7 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
     if (req.user.message) {
       const { message } = req.user;
       const { username, password, isNormalFlow } = req.body;
-      // Login bằng tài khoản, mật khẩu bình thường
+      // Login with username, password
       if (isNormalFlow) {
         res.status(501).json({ isAuthenticated: false, message });
       } else {
