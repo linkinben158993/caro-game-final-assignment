@@ -37,6 +37,9 @@ router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) 
       res.status(500).json(CONSTANT.SERVER_ERROR);
     } else {
       console.log(document);
+      res
+        .status(200)
+        .json({ success: true, message: 'Retrieved matches by user id success!', data: document });
     }
   });
 });

@@ -119,7 +119,11 @@ MatchSchema.statics.getMatchById = function (matchId, callBack) {
 MatchSchema.statics.getMatchByUserId = async function (userId, callBack) {
   try {
     const foundUser = await Users.findOne({ _id: userId });
-    console.log(foundUser);
+    if (foundUser === null) {
+      return callBack(null, 0);
+    }
+
+    return this.getMatchByEmail(foundUser.email, callBack);
   } catch (err) {
     console.log('Matches Model:', err);
     return callBack(err);
