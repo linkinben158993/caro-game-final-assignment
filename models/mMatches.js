@@ -88,6 +88,7 @@ MatchSchema.statics.getMatchByEmail = function (email, callBack) {
           status: match.status,
           opponent: data.opponent,
           host: data.host,
+          moves: match.moves,
         }));
         return newList;
       });
