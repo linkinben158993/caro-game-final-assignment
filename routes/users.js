@@ -188,6 +188,16 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
         msgError: true,
       },
     });
+  } else if (req.body.query) {
+    console.log('Find by query');
+    Users.findUserByUserOrFullName(req.body.query, (err, document) => {
+      if (err) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        console.log(document);
+        res.status(200).json({ success: true, message: 'Retrieved match by id!', data: document });
+      }
+    });
   } else {
     Users.find({ role: 0 }, { password: 0 })
       .exec()

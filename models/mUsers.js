@@ -119,4 +119,21 @@ UserSchema.statics.createUserWithOTP = function (email, callBack) {
   });
 };
 
+UserSchema.statics.findUserByUserOrFullName = function (queryString, callBack) {
+  return this.find({
+    $or: [
+      { email: { $regex: queryString, $options: 'i' } },
+      { fullName: { $regex: queryString, $options: 'i' } },
+    ],
+  })
+    .then((value) => {
+      if (value.length === 0) {
+        return callBack(null, 0);
+      }
+
+      return callBack(null, value);
+    })
+    .catch((err) => callBack(err));
+};
+
 module.exports = mongoose.model('User', UserSchema);
