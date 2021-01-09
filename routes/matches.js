@@ -29,7 +29,7 @@ router.get('/my/:id', passport.authenticate('jwt', { session: false }), (req, re
   });
 });
 
-router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/admin/user/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { id } = req.params;
   Matches.getMatchByUserId(id, (err, document) => {
     if (err) {
