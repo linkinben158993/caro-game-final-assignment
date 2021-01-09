@@ -30,9 +30,10 @@ router.post('/resend-otp', (req, res) => {
     });
   } else if (!resetAccount) {
     const { email } = req.body;
-    Helper.resetAccountOTP(req, res, email);
+    Helper.resetOTPAccountActivate(req, res, email);
   } else {
-    console.log('User want to reset password');
+    const { email } = req.body;
+    Helper.resetOTPForPassword(req, res, email);
   }
 });
 
@@ -86,7 +87,7 @@ router.post('/check-otp', (req, res) => {
             res.status(200).json({
               success: true,
               message: {
-                msgBody: 'Your Account Has Been Activated',
+                msgBody: 'Your Account Has Been Reset',
                 msgError: false,
               },
             });

@@ -52,7 +52,7 @@ const createAccount = (req, res, email, password, fullName, otp, isNormalFlow) =
 module.exports = {
   signToken,
 
-  resetAccountOTP: (req, res, email) => {
+  resetOTPAccountActivate: (req, res, email) => {
     Users.findOne({ email }, async (err, user) => {
       if (err) {
         res.status(501).json(CONSTANT.SERVER_ERROR);
@@ -67,7 +67,44 @@ module.exports = {
       }
       const OTP = Math.floor(Math.random() * 1000000);
 
-      const result = await nodeMailer.resendOTP(email, OTP);
+      const result = await nodeMailer.resendOTP(email, OTP, 'Activate');
+      if (!result.success) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        user.set({ otp: OTP });
+        user
+          .save()
+          .then(() => {
+            res.status(201).json({
+              message: {
+                msgBody: `An Email Has Been Sent To: ${email}`,
+                msgError: false,
+              },
+            });
+          })
+          .catch(() => {
+            res.status(500).json(CONSTANT.SERVER_ERROR);
+          });
+      }
+    });
+  },
+
+  resetOTPForPassword: (req, res, email) => {
+    Users.findOne({ email }, async (err, user) => {
+      if (err) {
+        res.status(501).json(CONSTANT.SERVER_ERROR);
+      }
+      if (!user) {
+        res.status(501).json({
+          message: {
+            msgBody: 'User Not Exists',
+            msgError: true,
+          },
+        });
+      }
+      const OTP = Math.floor(Math.random() * 1000000);
+
+      const result = await nodeMailer.resendOTP(email, OTP, 'Reset');
       if (!result.success) {
         res.status(500).json(CONSTANT.SERVER_ERROR);
       } else {

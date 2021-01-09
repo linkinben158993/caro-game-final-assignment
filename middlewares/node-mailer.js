@@ -48,14 +48,14 @@ module.exports = {
     });
   },
 
-  resendOTP: (receiverEmail, otp) => {
+  resendOTP: (receiverEmail, otp, reason) => {
     console.log('Sending mail!');
     const mailOptions = {
       from: `"Super Caro" ${email}`,
       to: `${receiverEmail}`,
       subject: 'Resend OTP',
       text:
-        `Provide Following OTP To Activate Your Account: ${otp} \n`
+        `Provide Following OTP To ${reason} Your Account: ${otp} \n`
         + 'If this is not you, ignore this email!',
     };
     return new Promise((resolve) => {
