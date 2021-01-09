@@ -182,6 +182,7 @@ router.post('/info/fullname', passport.authenticate('jwt', { session: false }), 
 });
 
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const queryString = req.query.query;
   if (req.user.role !== 1) {
     res.status(400).json({
       message: {
@@ -189,9 +190,9 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
         msgError: true,
       },
     });
-  } else if (req.query) {
+  } else if (queryString.length > 0) {
     console.log('Find by query');
-    Users.findUserByUserOrFullName(req.body.query, (err, document) => {
+    Users.findUserByUserOrFullName(queryString, (err, document) => {
       if (err) {
         res.status(500).json(CONSTANT.SERVER_ERROR);
       } else {
