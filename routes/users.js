@@ -189,7 +189,7 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
         msgError: true,
       },
     });
-  } else if (req.body.query) {
+  } else if (req.query) {
     console.log('Find by query');
     Users.findUserByUserOrFullName(req.body.query, (err, document) => {
       if (err) {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Users = require('./mUsers');
 
 const MatchSchema = new mongoose.Schema({
   host: {
@@ -113,6 +114,16 @@ MatchSchema.statics.getMatchById = function (matchId, callBack) {
       return callBack(null, document);
     })
     .catch((err) => callBack(err));
+};
+
+MatchSchema.statics.getMatchByUserId = async function (userId, callBack) {
+  try {
+    const foundUser = await Users.findOne({ _id: userId });
+    console.log(foundUser);
+  } catch (err) {
+    console.log('Matches Model:', err);
+    return callBack(err);
+  }
 };
 
 module.exports = mongoose.model('Match', MatchSchema);
