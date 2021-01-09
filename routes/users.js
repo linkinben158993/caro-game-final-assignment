@@ -195,7 +195,7 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
         res.status(500).json(CONSTANT.SERVER_ERROR);
       } else {
         console.log(document);
-        res.status(200).json({ success: true, message: 'Retrieved match by id!', data: document });
+        res.status(200).json({ success: true, message: 'Get all users by query!', data: document });
       }
     });
   } else {
