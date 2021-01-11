@@ -184,6 +184,7 @@ router.post('/info/fullname', passport.authenticate('jwt', { session: false }), 
 
 router.get('/info/stats/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
   if (req.params.id === 'my') {
+    console.log(req.user._id);
     MatchUser.getUserStats(req.user._id, (err, document) => {
       if (err) {
         console.log(err);

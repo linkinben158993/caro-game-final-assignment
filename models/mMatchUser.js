@@ -12,6 +12,10 @@ module.exports = {
         }
         const createdTimestamp = foundUser._id.getTimestamp().getTime();
         foundUser.createdTimeStamp = createdTimestamp;
+        if (document === null || foundUser === null) {
+          return callBack(null, 0);
+        }
+
         const sumUserMatches = document.length;
         const userWonMatches = document.filter((data) => data.winner === foundUser.email).length;
 
