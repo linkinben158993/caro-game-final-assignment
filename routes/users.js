@@ -183,14 +183,25 @@ router.post('/info/fullname', passport.authenticate('jwt', { session: false }), 
 });
 
 router.get('/info/stats/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-  MatchUser.getUserStats(req.params.id, (err, document) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json(CONSTANT.SERVER_ERROR);
-    } else {
-      res.status(200).json(document);
-    }
-  });
+  if (req.params.id === 'my') {
+    MatchUser.getUserStats(req.user._id, (err, document) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        res.status(200).json(document);
+      }
+    });
+  } else {
+    MatchUser.getUserStats(req.params.id, (err, document) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        res.status(200).json(document);
+      }
+    });
+  }
 });
 
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {

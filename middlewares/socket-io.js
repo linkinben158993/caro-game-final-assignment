@@ -138,12 +138,16 @@ module.exports = {
 
       // On client refresh will emit this
       socket.on('moves', (response) => {
+        console.log(response);
         if (response !== null) {
-          const roomRefresh = activeRooms.map((id) => id.roomId).indexOf(response);
+          const roomRefresh = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
           // Response room's move
           if (roomRefresh !== -1) {
             console.log('Request moves for room: ', response);
-            io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh]);
+            io.emit(`server-response-moves-${response.roomId}`, {
+              roomDetail: activeRooms[roomRefresh],
+              userReload: response.userReload,
+            });
           }
         }
       });
