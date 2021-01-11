@@ -54,6 +54,7 @@ module.exports = {
       socket.on('create-room', (response) => {
         response.guests = [];
         response.moves = [];
+        response.chatLogs = [];
         activeRooms.push(response);
         socket.emit('created-room', response);
 
@@ -112,28 +113,46 @@ module.exports = {
 
       socket.on('client-make-move', (response) => {
         const roomMakeMove = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
-        const Move = {
-          move: response.move,
-          mover: response.player,
-        };
-        activeRooms[roomMakeMove].moves.push(Move);
-        Matches.updateMoves(response.roomId, response.matchId, response.move, (err, document) => {
-          if (err) {
-            console.log(err);
-            // console.log('Update Move Failed');
-          } // Update Move Successful
-        });
-        console.log("This room's move: ", activeRooms[roomMakeMove].moves);
+        if (roomMakeMove !== -1) {
+          const Move = {
+            move: response.move,
+            mover: response.player,
+          };
+          activeRooms[roomMakeMove].moves.push(Move);
+          Matches.updateMoves(response.roomId, response.matchId, response.move, (err, document) => {
+            if (err) {
+              console.log(err);
+              // console.log('Update Move Failed');
+            } // Update Move Successful
+          });
+          console.log("This room's move: ", activeRooms[roomMakeMove].moves);
 
-        io.emit(`server-resp-move-${response.roomId}`, response);
+          io.emit(`server-resp-move-${response.roomId}`, response);
+        }
       });
 
       socket.on('client-message', (response) => {
-        console.log(response);
-        io.emit(`server-response-message-${response.roomId}`, {
-          username: response.username,
-          message: response.message,
-        });
+        const roomChatMessage = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
+        if (roomChatMessage !== 1) {
+          const Message = { username: response.username, message: response.message };
+          activeRooms[roomChatMessage].chatLogs.push(Message);
+          console.log(activeRooms[roomChatMessage]);
+          Matches.updateChatLogs(
+            response.roomId,
+            activeRooms[roomChatMessage].currentMatch,
+            Message,
+            (err, document) => {
+              if (err) {
+                console.log(err);
+                // console.log('Update Move Failed');
+              } // Update Move Successful
+            },
+          );
+          io.emit(`server-response-message-${response.roomId}`, {
+            username: response.username,
+            message: response.message,
+          });
+        }
       });
 
       // On client refresh will emit this

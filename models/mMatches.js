@@ -20,6 +20,18 @@ const MatchSchema = new mongoose.Schema({
       _id: {
         type: mongoose.Types.ObjectId,
       },
+      chatLogs: [
+        {
+          username: {
+            type: String,
+            required: true,
+          },
+          message: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
       moves: [
         {
           x: {
@@ -43,24 +55,27 @@ const MatchSchema = new mongoose.Schema({
       },
     },
   ],
-  chatLogs: [
-    {
-      username: {
-        type: String,
-        required: true,
-      },
-      message: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
 });
 
 MatchSchema.statics.updateMoves = function (roomId, matchId, move, callBack) {
   this.findOne({ roomId }, { match: { $elemMatch: { _id: matchId } } })
     .then((document) => {
       document.match[0].moves.push(move);
+      document
+        .save()
+        .then(() => {
+          callBack(null, true);
+        })
+        .catch((err) => callBack(err));
+    })
+    .catch((err) => callBack(null, err));
+};
+
+MatchSchema.statics.updateChatLogs = function (roomId, matchId, message, callBack) {
+  this.findOne({ roomId }, { match: { $elemMatch: { _id: matchId } } })
+    .then((document) => {
+      console.log(message);
+      document.match[0].chatLogs.push(message);
       document
         .save()
         .then(() => {
