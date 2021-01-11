@@ -218,4 +218,8 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
   }
 });
 
+router.get('/admin/block/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  console.log('Admin want to block this user: ', req.params.id);
+});
+
 module.exports = router;

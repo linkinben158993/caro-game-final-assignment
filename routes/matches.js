@@ -46,4 +46,14 @@ router.get('/admin/user/:id', passport.authenticate('jwt', { session: false }), 
   });
 });
 
+router.get('/admin/user/game/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Matches.getMatchById(req.params.id, (err, document) => {
+    if (err) {
+      res.status(500).json(CONSTANT.SERVER_ERROR);
+    } else {
+      res.status(200).json({ success: true, message: 'Retrieved match by id!', data: document });
+    }
+  });
+});
+
 module.exports = router;
