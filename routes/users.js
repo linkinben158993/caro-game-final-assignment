@@ -4,6 +4,7 @@ const Helper = require('./helper');
 // eslint-disable-next-line no-unused-vars
 const passportConfig = require('../middlewares/passport');
 const Users = require('../models/mUsers');
+const MatchUser = require('../models/mMatchUser');
 const CONSTANT = require('./constants');
 
 const router = express.Router();
@@ -179,6 +180,17 @@ router.post('/info/fullname', passport.authenticate('jwt', { session: false }), 
       console.log(err);
       res.status(500).json(CONSTANT.SERVER_ERROR);
     });
+});
+
+router.get('/info/stats/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  MatchUser.getUserStats(req.params.id, (err, document) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json(CONSTANT.SERVER_ERROR);
+    } else {
+      res.status(200).json(document);
+    }
+  });
 });
 
 router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) => {
