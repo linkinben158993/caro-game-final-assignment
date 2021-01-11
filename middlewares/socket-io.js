@@ -143,7 +143,7 @@ module.exports = {
           // Response room's move
           if (roomRefresh !== -1) {
             console.log('Request moves for room: ', response);
-            io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh].moves);
+            io.emit(`server-response-moves-${response.roomId}`, activeRooms[roomRefresh]);
           }
         }
       });
