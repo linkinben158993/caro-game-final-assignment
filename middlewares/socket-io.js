@@ -55,19 +55,59 @@ module.exports = {
         response.guests = [];
         response.moves = [];
         response.chatLogs = [];
-        activeRooms.push(response);
-        socket.emit('created-room', response);
+        if (activeRooms.map((item) => item.roomId).indexOf(response.roomId) === -1) {
+          activeRooms.push(response);
 
-        console.log('Current active sockets after create-room:', activeSockets.length);
-        console.log('Current online users after create-room:', onlineUsers.length);
-        console.log('Current active rooms after create-room:', activeRooms.length);
+          console.log('Current active sockets after create-room:', activeSockets.length);
+          console.log('Current online users after create-room:', onlineUsers.length);
+          console.log('Current active rooms after create-room:', activeRooms.length);
 
-        io.emit('active-rooms', activeRooms);
+          io.emit('active-rooms', activeRooms);
+        }
+      });
+
+      socket.on('quick-play', (response) => {
+        let roomCount = 0;
+        let findFail = false;
+        // Already random number will not count
+        const randedNumber = [];
+        while (true) {
+          if (activeRooms.length === 0) {
+            io.emit(`server-response-no-room-${response.access_token}`, false);
+            break;
+          } else {
+            const roomJoinRandomIndex = Math.floor(Math.random() * activeRooms.length);
+            if (
+              activeRooms[roomJoinRandomIndex].y === null
+              && !activeRooms[roomJoinRandomIndex].password
+              && randedNumber.map((id) => id).indexOf(roomJoinRandomIndex) === -1
+            ) {
+              console.log('Found room for quick join:', activeRooms[roomJoinRandomIndex].roomId);
+              io.emit(
+                `server-response-room-join-${response.access_token}`,
+                activeRooms[roomJoinRandomIndex].roomId,
+              );
+              break;
+            } else {
+              if (roomCount >= activeRooms.length) {
+                findFail = true;
+                break;
+              }
+              roomCount += 1;
+            }
+          }
+        }
+        if (findFail) {
+          // Can create new room here
+          console.log('Find room failed, create new room response!');
+          io.emit(`server-response-find-fail-${response.access_token}`, false);
+        }
       });
 
       socket.on('joined', (response) => {
         const roomJoinedIndex = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         if (activeRooms[roomJoinedIndex].y === null) {
+          console.log('Join new game as player!');
           activeRooms[roomJoinedIndex].y = {
             username: response.currentUser.user.email,
             fullName: response.currentUser.user.fullName,
@@ -88,7 +128,7 @@ module.exports = {
           });
           newMatch.save().then(() => {
             activeRooms[roomJoinedIndex].currentMatch = newMatchId;
-            io.emit('player-join-game', {
+            io.emit(`player-join-game-${response.roomId}`, {
               roomId: response.roomId,
               roomDetails: activeRooms[roomJoinedIndex],
               // eslint-disable-next-line no-underscore-dangle
@@ -235,7 +275,7 @@ module.exports = {
                 .then(() => {
                   activeRooms[roomNewGameIndex].currentMatch = newMatchId;
                   activeRooms[roomNewGameIndex].moves = [];
-                  io.emit('player-join-game', {
+                  io.emit(`player-join-game-${response}`, {
                     roomId: response,
                     roomDetails: activeRooms[roomNewGameIndex],
                     // eslint-disable-next-line no-underscore-dangle
