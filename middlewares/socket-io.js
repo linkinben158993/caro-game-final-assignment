@@ -125,7 +125,7 @@ module.exports = {
       });
 
       socket.on('joined', (response) => {
-        console.log('Joined:', response);
+        console.log('Joined:', response.roomId);
         const roomJoinedIndex = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         if (activeRooms[roomJoinedIndex].y === null) {
           console.log('Join new game as player!');
@@ -234,7 +234,10 @@ module.exports = {
       socket.on('end-game', (response) => {
         const roomEndGame = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         // Empty Moves Array For Next Match
-        const moves = Math.floor(activeRooms[roomEndGame].moves.length / 2);
+        let moves;
+        if (activeRooms[roomEndGame].moves) {
+          moves = Math.floor(activeRooms[roomEndGame].moves.length / 2);
+        }
 
         if (!response.myTurn) {
           // Find room and match that has ended and save results into database
