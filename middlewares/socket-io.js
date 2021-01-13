@@ -115,6 +115,11 @@ module.exports = {
         }
       });
 
+      socket.on('client-find-room', (response) => {
+        const foundRoom = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
+        io.emit(`server-response-found-room-${response.email}`, foundRoom);
+      });
+
       socket.on('joined', (response) => {
         const roomJoinedIndex = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         if (activeRooms[roomJoinedIndex].y === null) {
