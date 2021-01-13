@@ -118,7 +118,10 @@ module.exports = {
       socket.on('client-find-room', (response) => {
         console.log('Find room request:', response);
         const foundRoom = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
-        io.emit(`server-response-found-room-${response.email}`, foundRoom);
+        io.emit(`server-response-found-room-${response.email}`, {
+          foundRoom,
+          roomId: response.roomId,
+        });
       });
 
       socket.on('joined', (response) => {
