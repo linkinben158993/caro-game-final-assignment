@@ -42,6 +42,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  cups: {
+    type: Number,
+    default: 10,
+  },
 });
 
 UserSchema.pre('save', function (next) {

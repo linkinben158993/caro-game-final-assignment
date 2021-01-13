@@ -1,6 +1,17 @@
 const socketIO = require('socket.io');
 const mongoose = require('mongoose');
 const Matches = require('../models/mMatches');
+const Users = require('../models/mUsers');
+
+const cupCalCulate = (moves) => {
+  if (moves <= 30) {
+    return 3;
+  }
+  if (moves <= 60) {
+    return 2;
+  }
+  return 1;
+};
 
 module.exports = {
   startSocketServer(server) {
@@ -165,7 +176,6 @@ module.exports = {
               // console.log('Update Move Failed');
             } // Update Move Successful
           });
-          console.log("This room's move: ", activeRooms[roomMakeMove].moves);
 
           io.emit(`server-resp-move-${response.roomId}`, response);
         }
@@ -214,7 +224,7 @@ module.exports = {
       socket.on('end-game', (response) => {
         const roomEndGame = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         // Empty Moves Array For Next Match
-        activeRooms[roomEndGame].moves = [];
+        const moves = Math.floor(activeRooms[roomEndGame].moves.length / 2);
 
         if (!response.myTurn) {
           // Find room and match that has ended and save results into database
@@ -239,12 +249,47 @@ module.exports = {
                 },
               )
                 .then((res) => {
-                  // console.log('Update Game Status Successfully');
-                  // console.log(res);
+                  const plusCup = cupCalCulate(moves);
+                  Users.findOne({ email: response.currentUser.user.email })
+                    .then((value) => {
+                      if (value.cups > 0) {
+                        value.set({ cups: value.cups + plusCup });
+                        value
+                          .save()
+                          .then(() => {
+                            console.log('Update Cup Win!');
+                            activeRooms[roomEndGame].moves = [];
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
                 })
                 .catch((err) => {
                   console.log(err);
                 });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          Users.findOne({ email: response.currentUser.user.email })
+            .then((value) => {
+              if (value.cups > 0) {
+                value.set({ cups: value.cups - 1 });
+                value
+                  .save()
+                  .then(() => {
+                    console.log('Update Cup Lose!');
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }
             })
             .catch((err) => {
               console.log(err);

@@ -1,6 +1,5 @@
 const JWT = require('jsonwebtoken');
 const Users = require('../models/mUsers');
-const Matches = require('../models/mMatches');
 const CONSTANT = require('./constants');
 const nodeMailer = require('../middlewares/node-mailer');
 

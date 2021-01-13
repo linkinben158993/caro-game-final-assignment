@@ -24,6 +24,7 @@ module.exports = {
             stats: {
               playedGame: 0,
               winRate: 0,
+              cups: foundUser.cups,
             },
           });
         }
