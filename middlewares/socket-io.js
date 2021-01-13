@@ -235,7 +235,8 @@ module.exports = {
         const roomEndGame = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         // Empty Moves Array For Next Match
         let moves;
-        if (activeRooms[roomEndGame].moves) {
+        console.log('Room end index: ', roomEndGame);
+        if (roomEndGame !== -1 && activeRooms[roomEndGame].moves) {
           moves = Math.floor(activeRooms[roomEndGame].moves.length / 2);
         }
 
