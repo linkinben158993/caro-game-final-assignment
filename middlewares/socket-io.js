@@ -294,14 +294,14 @@ module.exports = {
       });
 
       socket.on('exit-room', (response) => {
-        console.log('Exit room:', response);
-        const deleteRoom = activeRooms.map((id) => id.roomId).indexOf(response);
+        console.log('Exit room:', response.roomId);
+        const deleteRoom = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         activeRooms.splice(deleteRoom, 1);
         console.log('Current active sockets after exit room:', activeSockets.length);
         console.log('Current online users after exit room:', onlineUsers.length);
         console.log('Current active rooms after exit room:', activeRooms.length);
         io.emit('active-rooms', activeRooms);
-        io.emit(`exit-room-${response}`);
+        io.emit(`exit-room-${response}`, { roomId: response.roomId, exitUser: response.exitUser });
       });
 
       socket.on('disconnect', () => {
