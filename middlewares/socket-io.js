@@ -294,6 +294,7 @@ module.exports = {
       });
 
       socket.on('exit-room', (response) => {
+        console.log('Exit room:', response);
         const deleteRoom = activeRooms.map((id) => id.roomId).indexOf(response);
         activeRooms.splice(deleteRoom, 1);
         console.log('Current active sockets after exit room:', activeSockets.length);
