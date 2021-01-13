@@ -116,12 +116,13 @@ module.exports = {
       });
 
       socket.on('client-find-room', (response) => {
-        console.log(response);
+        console.log('Find room request:', response);
         const foundRoom = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         io.emit(`server-response-found-room-${response.email}`, foundRoom);
       });
 
       socket.on('joined', (response) => {
+        console.log('Joined:', response);
         const roomJoinedIndex = activeRooms.map((id) => id.roomId).indexOf(response.roomId);
         if (activeRooms[roomJoinedIndex].y === null) {
           console.log('Join new game as player!');
