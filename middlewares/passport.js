@@ -56,7 +56,14 @@ passport.use(
       // User has not been activated
       if (!user.activated) {
         console.log('Passport: User has not been activated!');
-        return done(null, { message: { msgBody: 'User has not been activated', msgError: true } });
+        return done(null, { message: { msgBody: 'User has not been activated!', msgError: true } });
+      }
+      // User has been blocked by admin
+      if (user.blocked) {
+        console.log('Passport: User has been blocked by admin!');
+        return done(null, {
+          message: { msgBody: 'User has been blocked by admin!', msgError: true },
+        });
       }
 
       return user.checkPassword(password, done);

@@ -38,6 +38,9 @@ const UserSchema = new mongoose.Schema({
   activated: {
     type: Boolean,
   },
+  blocked: {
+    type: Boolean,
+  },
 });
 
 UserSchema.pre('save', function (next) {
@@ -132,6 +135,23 @@ UserSchema.statics.findUserByUserOrFullName = function (queryString, callBack) {
       }
 
       return callBack(null, value);
+    })
+    .catch((err) => callBack(err));
+};
+
+UserSchema.statics.setBlockStatus = function (userId, callBack) {
+  return this.findOne({
+    _id: userId,
+  })
+    .then((value) => {
+      value.set({ blocked: !value.blocked });
+      value
+        .save()
+        .then((value1) => callBack(null, value1))
+        .catch((err) => {
+          console.log(err);
+          return callBack(err);
+        });
     })
     .catch((err) => callBack(err));
 };

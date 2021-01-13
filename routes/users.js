@@ -117,6 +117,13 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
       // Login with username, password
       if (isNormalFlow) {
         res.status(501).json({ isAuthenticated: false, message });
+      } else if (
+        !isNormalFlow
+        && message.msgBody !== 'User not found'
+        && message.msgBody === 'Password not match'
+      ) {
+        // User press login with Google Button
+        res.status(501).json({ isAuthenticated: false, message });
       } else {
         const { fullName } = req.body;
         Helper.createAccountByGmail(req, res, username, password, fullName, isNormalFlow);
@@ -233,16 +240,55 @@ router.get('/all', passport.authenticate('jwt', { session: false }), (req, res) 
         });
       })
       .catch((reason) => {
-        res.status(500).json({
-          message: 'Retrieved all users failed, server error!',
-          data: reason,
-        });
+        res.status(500).json(CONSTANT.SERVER_ERROR);
       });
   }
 });
 
-router.get('/admin/block/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log('Admin want to block this user: ', req.params.id);
+router.post('/admin/block', passport.authenticate('jwt', { session: false }), (req, res) => {
+  if (req.user.role !== 1) {
+    res.status(400).json({
+      message: {
+        msgBody: 'Must be admin to block!',
+        msgError: true,
+      },
+    });
+  } else {
+    console.log('Admin want to block this user: ', req.body.userId);
+    Users.setBlockStatus(req.body.userId, (err, callBack) => {
+      if (err) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Block user successfully!',
+        });
+      }
+    });
+  }
+});
+
+router.post('/admin/unblock', passport.authenticate('jwt', { session: false }), (req, res) => {
+  if (req.user.role !== 1) {
+    res.status(400).json({
+      message: {
+        msgBody: 'Must be admin to unblock!',
+        msgError: true,
+      },
+    });
+  } else {
+    console.log('Admin want to unblock this user: ', req.body.userId);
+    Users.setBlockStatus(req.body.userId, (err, callBack) => {
+      if (err) {
+        res.status(500).json(CONSTANT.SERVER_ERROR);
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Unblock user successfully!',
+        });
+      }
+    });
+  }
 });
 
 module.exports = router;
