@@ -124,6 +124,9 @@ router.post('/login', passport.authenticate('local', { session: false }), (req, 
       ) {
         // User press login with Google Button
         res.status(501).json({ isAuthenticated: false, message });
+      } else if (!isNormalFlow && message.msgBody === 'User has been blocked by admin!') {
+        // User press login with Google Button but is blocked
+        res.status(501).json({ isAuthenticated: false, message });
       } else {
         const { fullName } = req.body;
         Helper.createAccountByGmail(req, res, username, password, fullName, isNormalFlow);
