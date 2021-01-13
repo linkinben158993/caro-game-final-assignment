@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
   },
   blocked: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   cups: {
     type: Number,
