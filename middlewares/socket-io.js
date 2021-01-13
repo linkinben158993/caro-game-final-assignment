@@ -301,7 +301,10 @@ module.exports = {
         console.log('Current online users after exit room:', onlineUsers.length);
         console.log('Current active rooms after exit room:', activeRooms.length);
         io.emit('active-rooms', activeRooms);
-        io.emit(`exit-room-${response}`, { roomId: response.roomId, exitUser: response.exitUser });
+        io.emit(`exit-room-${response.roomId}`, {
+          roomId: response.roomId,
+          exitUser: response.exitUser,
+        });
       });
 
       socket.on('disconnect', () => {
