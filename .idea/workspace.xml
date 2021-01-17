@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3ccf6edc-457e-4411-ae96-2eb47a198980" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/mUsers.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/mUsers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +35,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="12.18.3" />
     <property name="javascript.nodejs.core.library.typings.version" value="12.19.8" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CaroGame-Frontend/caro-game-user" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -119,7 +120,8 @@
       <workItem from="1610405941282" duration="809000" />
       <workItem from="1610427431185" duration="3229000" />
       <workItem from="1610446362521" duration="7129000" />
-      <workItem from="1610546808260" duration="20769000" />
+      <workItem from="1610546808260" duration="28376000" />
+      <workItem from="1610852506283" duration="419000" />
     </task>
     <servers />
   </component>
